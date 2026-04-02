@@ -1,0 +1,32 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 4h RSI focused refinement on direct Binance candles",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "4h",
+    "notes": "Focused refinement around the strongest direct-4h RSI candidates, comparing plain and cross-down exits."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 2190,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": [21, 22, 23, 24, 25],
+        "oversold": [18, 19, 20, 21, 22],
+        "overbought": [62, 63, 64, 65]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_crossdown_exit",
+      "params": {
+        "period": [21, 22, 23, 24, 25],
+        "oversold": [18, 19, 20, 21, 22],
+        "overbought": [62, 63, 64, 65]
+      }
+    }
+  ]
+}

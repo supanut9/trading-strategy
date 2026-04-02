@@ -1,0 +1,7 @@
+interface:
+  display_name: "Rolling Validation"
+  short_description: "Validate a candidate across rolling datasets and rolling result files."
+  default_prompt: "Use $rolling-validation to check whether this candidate holds up across rolling windows."
+
+policy:
+  allow_implicit_invocation: true

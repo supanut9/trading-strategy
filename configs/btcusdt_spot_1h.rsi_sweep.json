@@ -1,0 +1,33 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h RSI mean-reversion sweep",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Tests plain long-only RSI mean-reversion parameter combinations against the current EMA benchmark."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "ema_triple_pullback_fast_exit",
+      "params": {
+        "fast_window": 12,
+        "middle_window": 20,
+        "slow_window": 43,
+        "pullback_pct": 0.00125
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": [2, 5, 7, 9, 14, 21],
+        "oversold": [10, 15, 20, 25, 30],
+        "overbought": [55, 60, 65, 70, 75]
+      }
+    }
+  ]
+}

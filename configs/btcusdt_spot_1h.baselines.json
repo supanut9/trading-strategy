@@ -1,0 +1,41 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h baseline sweep",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "First pass on BTC hourly spot data only. Keep the grids modest until one family starts to dominate."
+  },
+  "initial_cash": 10000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "buy_and_hold"
+    },
+    {
+      "name": "sma_cross",
+      "params": {
+        "short_window": [12, 24],
+        "long_window": [72, 144]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": [14],
+        "oversold": [25, 30],
+        "overbought": [60, 65]
+      }
+    },
+    {
+      "name": "donchian_breakout",
+      "params": {
+        "lookback": [24, 48],
+        "exit_lookback": [12, 24]
+      }
+    }
+  ]
+}

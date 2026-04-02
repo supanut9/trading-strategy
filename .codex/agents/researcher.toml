@@ -1,0 +1,4 @@
+model_reasoning_effort = "high"
+model_verbosity = "low"
+personality = "pragmatic"
+web_search = "cached"

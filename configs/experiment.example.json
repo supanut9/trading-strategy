@@ -1,0 +1,34 @@
+{
+  "initial_cash": 10000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 252,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "buy_and_hold"
+    },
+    {
+      "name": "sma_cross",
+      "params": {
+        "short_window": [10, 20],
+        "long_window": [50, 100]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": [14],
+        "oversold": [25, 30],
+        "overbought": [65, 70]
+      }
+    },
+    {
+      "name": "donchian_breakout",
+      "params": {
+        "lookback": [20, 55],
+        "exit_lookback": [10, 20]
+      }
+    }
+  ]
+}

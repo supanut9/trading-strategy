@@ -1,0 +1,7 @@
+interface:
+  display_name: "Result Audit"
+  short_description: "Investigate suspicious backtest outputs, anomalies, and weak evidence."
+  default_prompt: "Use $result-audit to inspect this suspicious result and explain whether it is credible."
+
+policy:
+  allow_implicit_invocation: true

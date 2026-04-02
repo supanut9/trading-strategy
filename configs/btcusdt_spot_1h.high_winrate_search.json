@@ -1,0 +1,55 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h high-win-rate search",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Compares current RSI leaders with higher-win-rate oriented RSI exit logic and Bollinger mean-reversion variants."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "win_rate_pct",
+  "strategies": [
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": 22,
+        "oversold": 18,
+        "overbought": 64
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": 22,
+        "oversold": 21,
+        "overbought": 63
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_confirmation",
+      "params": {
+        "period": [22],
+        "oversold": [18, 21],
+        "overbought": [63, 64]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_crossdown_exit",
+      "params": {
+        "period": [22],
+        "oversold": [18, 21],
+        "overbought": [63, 64]
+      }
+    },
+    {
+      "name": "bollinger_mean_reversion",
+      "params": {
+        "period": [20, 22, 24, 30],
+        "band_width": [1.2, 1.5, 1.8, 2.0]
+      }
+    }
+  ]
+}

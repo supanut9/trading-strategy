@@ -1,0 +1,28 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h double top/bottom pattern sweep",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "First price-pattern experiment using a long-only double-bottom entry with double-top exit detector."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "double_top_bottom_reversal",
+      "params": {
+        "swing_window": [2, 3],
+        "min_separation_bars": [6],
+        "max_separation_bars": [24],
+        "peak_tolerance_pct": [0.01, 0.015],
+        "neckline_buffer_pct": [0.015],
+        "breakout_pct": [0.0],
+        "lookback_bars": [120]
+      }
+    }
+  ]
+}

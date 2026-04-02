@@ -1,0 +1,30 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h RSI + EMA + ATR + price structure sweep",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Combined system with RSI entry, EMA regime filter, ATR volatility gate, and recent range midpoint structure filter."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "rsi_ema_atr_price_structure",
+      "params": {
+        "period": [24],
+        "oversold": [19, 20],
+        "overbought": [62, 64],
+        "ema_window": [55, 100],
+        "ema_slope_window": [6],
+        "atr_period": [14],
+        "min_atr_pct": [0.8, 1.0],
+        "max_atr_pct": [4.5],
+        "structure_window": [20]
+      }
+    }
+  ]
+}

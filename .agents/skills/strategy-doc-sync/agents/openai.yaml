@@ -1,0 +1,7 @@
+interface:
+  display_name: "Strategy Doc Sync"
+  short_description: "Update strategy memory and family docs after experiment results change."
+  default_prompt: "Use $strategy-doc-sync to update the strategy research docs with the latest experiment results."
+
+policy:
+  allow_implicit_invocation: true

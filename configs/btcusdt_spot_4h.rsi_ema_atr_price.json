@@ -1,0 +1,30 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 4h RSI + EMA + ATR + price structure sweep",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "4h",
+    "notes": "Combined system with RSI entry, EMA regime filter, ATR volatility gate, and recent range midpoint structure filter on direct Binance 4h candles."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 2190,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "rsi_ema_atr_price_structure",
+      "params": {
+        "period": [21, 22],
+        "oversold": [18, 19],
+        "overbought": [64],
+        "ema_window": [55, 100],
+        "ema_slope_window": [6],
+        "atr_period": [14],
+        "min_atr_pct": [2.0],
+        "max_atr_pct": [8.0],
+        "structure_window": [12, 20]
+      }
+    }
+  ]
+}

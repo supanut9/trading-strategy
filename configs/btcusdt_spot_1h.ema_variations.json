@@ -1,0 +1,38 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h EMA family sweep",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Compare several EMA-based long-only trend variants on the same 5,000-candle Binance spot window."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "ema_cross",
+      "params": {
+        "short_window": [8, 12, 21, 34],
+        "long_window": [55, 89, 144, 200]
+      }
+    },
+    {
+      "name": "ema_price_trend",
+      "params": {
+        "ema_window": [55, 100, 200],
+        "slope_window": [1, 3, 6]
+      }
+    },
+    {
+      "name": "ema_triple_stack",
+      "params": {
+        "fast_window": [8, 12],
+        "middle_window": [21, 34],
+        "slow_window": [89, 144]
+      }
+    }
+  ]
+}

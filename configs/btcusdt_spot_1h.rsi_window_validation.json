@@ -1,0 +1,32 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h RSI leader window validation",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Validates the current 1h RSI leaders on separate early and recent 2500-candle windows."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "rsi_mean_reversion_crossdown_exit",
+      "params": {
+        "period": 24,
+        "oversold": 19,
+        "overbought": 64
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": 24,
+        "oversold": 20,
+        "overbought": 62
+      }
+    }
+  ]
+}

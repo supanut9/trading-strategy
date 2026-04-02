@@ -1,0 +1,34 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h EMA vs SMA pullback fast-exit comparison",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Compares the current best EMA pullback fast-exit candidate against structurally similar SMA pullback fast-exit variants."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "ema_triple_pullback_fast_exit",
+      "params": {
+        "fast_window": 12,
+        "middle_window": 20,
+        "slow_window": 43,
+        "pullback_pct": 0.00125
+      }
+    },
+    {
+      "name": "sma_triple_pullback_fast_exit",
+      "params": {
+        "fast_window": [10, 12, 14],
+        "middle_window": [20, 21],
+        "slow_window": [40, 43, 45],
+        "pullback_pct": [0.00125]
+      }
+    }
+  ]
+}

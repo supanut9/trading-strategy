@@ -1,0 +1,37 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h RSI ATR execution sweep",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Test ATR stop-loss and take-profit execution rules around the strongest 1h RSI candidates."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "risk_management": {
+    "atr_period": 14,
+    "stop_loss_atr_multiple": [null, 1.0, 1.5, 2.0, 2.5],
+    "take_profit_atr_multiple": [null, 3.0, 4.0]
+  },
+  "strategies": [
+    {
+      "name": "rsi_mean_reversion_crossdown_exit",
+      "params": {
+        "period": [24],
+        "oversold": [19],
+        "overbought": [64]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": [24],
+        "oversold": [20],
+        "overbought": [62]
+      }
+    }
+  ]
+}

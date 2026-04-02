@@ -1,0 +1,86 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h EMA-only filtered variants",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "EMA-only variants that try to reduce whipsaws with slower EMA context filters or pullback-style entries."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "ema_cross_price_filter",
+      "params": {
+        "short_window": 9,
+        "long_window": 21,
+        "filter_window": 200
+      }
+    },
+    {
+      "name": "ema_cross_trend_filter",
+      "params": {
+        "short_window": 9,
+        "long_window": 21,
+        "trend_fast_window": 50,
+        "trend_slow_window": 200
+      }
+    },
+    {
+      "name": "ema_cross_price_filter",
+      "params": {
+        "short_window": 34,
+        "long_window": 55,
+        "filter_window": 200
+      }
+    },
+    {
+      "name": "ema_cross_trend_filter",
+      "params": {
+        "short_window": 34,
+        "long_window": 55,
+        "trend_fast_window": 50,
+        "trend_slow_window": 200
+      }
+    },
+    {
+      "name": "ema_triple_pullback",
+      "params": {
+        "fast_window": 9,
+        "middle_window": 21,
+        "slow_window": 55,
+        "pullback_pct": 0.003
+      }
+    },
+    {
+      "name": "ema_triple_pullback",
+      "params": {
+        "fast_window": 9,
+        "middle_window": 21,
+        "slow_window": 55,
+        "pullback_pct": 0.0075
+      }
+    },
+    {
+      "name": "ema_triple_pullback",
+      "params": {
+        "fast_window": 10,
+        "middle_window": 25,
+        "slow_window": 50,
+        "pullback_pct": 0.003
+      }
+    },
+    {
+      "name": "ema_triple_pullback",
+      "params": {
+        "fast_window": 10,
+        "middle_window": 25,
+        "slow_window": 50,
+        "pullback_pct": 0.0075
+      }
+    }
+  ]
+}

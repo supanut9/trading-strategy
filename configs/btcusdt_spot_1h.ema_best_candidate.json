@@ -1,0 +1,25 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h EMA best candidate so far",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Best EMA-only candidate found so far by iterative refinement around the fast-exit pullback family."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "ema_triple_pullback_fast_exit",
+      "params": {
+        "fast_window": 12,
+        "middle_window": 20,
+        "slow_window": 43,
+        "pullback_pct": 0.00125
+      }
+    }
+  ]
+}

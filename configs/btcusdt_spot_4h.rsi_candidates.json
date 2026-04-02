@@ -1,0 +1,40 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 4h RSI candidate comparison",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "4h",
+    "notes": "Tests the current leading 1h RSI candidates on an aggregated 4h BTC spot dataset derived from the local 1h candles."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 2190,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": 22,
+        "oversold": 18,
+        "overbought": 64
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": 22,
+        "oversold": 21,
+        "overbought": 63
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_confirmation",
+      "params": {
+        "period": 22,
+        "oversold": 21,
+        "overbought": 63
+      }
+    }
+  ]
+}

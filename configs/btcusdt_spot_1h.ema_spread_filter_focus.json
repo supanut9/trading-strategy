@@ -1,0 +1,36 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h EMA spread-gated pullback fast-exit focused search",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Focused search around the best EMA-only candidate, testing whether minimum EMA separation improves the 12/20/43 pullback fast-exit branch."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "ema_triple_pullback_fast_exit",
+      "params": {
+        "fast_window": 12,
+        "middle_window": 20,
+        "slow_window": 43,
+        "pullback_pct": 0.00125
+      }
+    },
+    {
+      "name": "ema_triple_pullback_fast_exit_spread_filter",
+      "params": {
+        "fast_window": [12],
+        "middle_window": [20],
+        "slow_window": [42, 43, 44],
+        "pullback_pct": [0.001, 0.00125, 0.0015],
+        "min_fast_middle_spread_pct": [0.0005, 0.001, 0.0015],
+        "min_middle_slow_spread_pct": [0.001, 0.0015, 0.002]
+      }
+    }
+  ]
+}

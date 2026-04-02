@@ -1,0 +1,7 @@
+interface:
+  display_name: "Backtest Runner"
+  short_description: "Run and summarize repository backtests from configs and CSV data."
+  default_prompt: "Use $backtest-runner to run a backtest from this repository and summarize the top result."
+
+policy:
+  allow_implicit_invocation: true

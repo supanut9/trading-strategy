@@ -1,0 +1,41 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h RSI with EMA trend filter",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Compares the strongest RSI mean-reversion candidates against RSI entries filtered by price being above a long EMA."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": 22,
+        "oversold": 18,
+        "overbought": 64
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": 22,
+        "oversold": 21,
+        "overbought": 63
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_ema_filter",
+      "params": {
+        "period": [22],
+        "oversold": [18, 21],
+        "overbought": [63, 64],
+        "filter_window": [150, 200]
+      }
+    }
+  ]
+}

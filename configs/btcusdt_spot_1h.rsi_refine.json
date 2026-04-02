@@ -1,0 +1,33 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h RSI mean-reversion refinement",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Refines the profitable RSI pocket found in the initial sweep around period 21, oversold near 20, and overbought in the low-to-mid 60s."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "ema_triple_pullback_fast_exit",
+      "params": {
+        "fast_window": 12,
+        "middle_window": 20,
+        "slow_window": 43,
+        "pullback_pct": 0.00125
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": [18, 19, 20, 21, 22, 23, 24],
+        "oversold": [15, 16, 17, 18, 19, 20, 21, 22],
+        "overbought": [60, 61, 62, 63, 64, 65, 66, 67, 68]
+      }
+    }
+  ]
+}

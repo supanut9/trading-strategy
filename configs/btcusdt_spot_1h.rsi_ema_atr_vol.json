@@ -1,0 +1,29 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h RSI + EMA + ATR volatility sweep",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "RSI oversold entry with EMA regime and ATR volatility filter only."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "rsi_ema_atr_volatility_filter",
+      "params": {
+        "period": [24],
+        "oversold": [19],
+        "overbought": [62, 64],
+        "ema_window": [55],
+        "ema_slope_window": [3],
+        "atr_period": [14],
+        "min_atr_pct": [0.2, 0.4],
+        "max_atr_pct": [6.0]
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h EMA next refinements",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Focused follow-up on the two next EMA-only ideas: 34/55 with price and 200 EMA slope filter, and 9/21/55 pullback with earlier exit."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "ema_cross_price_slope_filter",
+      "params": {
+        "short_window": 34,
+        "long_window": 55,
+        "filter_window": 200,
+        "slope_window": [1, 3, 6]
+      }
+    },
+    {
+      "name": "ema_triple_pullback_fast_exit",
+      "params": {
+        "fast_window": 9,
+        "middle_window": 21,
+        "slow_window": 55,
+        "pullback_pct": [0.003, 0.0075]
+      }
+    }
+  ]
+}

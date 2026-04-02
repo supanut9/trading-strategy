@@ -1,0 +1,162 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h family matrix",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Focused matrix across EMA, RSI, Bollinger, and EMA+RSI variants on native 1h BTC spot candles."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "ema_cross",
+      "params": {
+        "short_window": [12, 21, 34],
+        "long_window": [55, 89, 144]
+      }
+    },
+    {
+      "name": "ema_cross_price_filter",
+      "params": {
+        "short_window": [9, 21],
+        "long_window": [55],
+        "filter_window": [100, 200]
+      }
+    },
+    {
+      "name": "ema_cross_trend_filter",
+      "params": {
+        "short_window": [9, 21],
+        "long_window": [55],
+        "trend_fast_window": [50],
+        "trend_slow_window": [200]
+      }
+    },
+    {
+      "name": "ema_cross_price_slope_filter",
+      "params": {
+        "short_window": [34],
+        "long_window": [55],
+        "filter_window": [200],
+        "slope_window": [3, 6]
+      }
+    },
+    {
+      "name": "ema_price_trend",
+      "params": {
+        "ema_window": [55, 100, 200],
+        "slope_window": [3, 6]
+      }
+    },
+    {
+      "name": "ema_triple_stack",
+      "params": {
+        "fast_window": [8, 12],
+        "middle_window": [21, 34],
+        "slow_window": [89, 144]
+      }
+    },
+    {
+      "name": "ema_triple_pullback",
+      "params": {
+        "fast_window": [9, 10],
+        "middle_window": [21, 25],
+        "slow_window": [50, 55],
+        "pullback_pct": [0.003, 0.005]
+      }
+    },
+    {
+      "name": "ema_triple_pullback_fast_exit",
+      "params": {
+        "fast_window": 12,
+        "middle_window": 20,
+        "slow_window": 43,
+        "pullback_pct": 0.00125
+      }
+    },
+    {
+      "name": "ema_triple_pullback_fast_exit",
+      "params": {
+        "fast_window": 9,
+        "middle_window": 21,
+        "slow_window": 55,
+        "pullback_pct": 0.003
+      }
+    },
+    {
+      "name": "ema_triple_pullback_fast_exit_spread_filter",
+      "params": {
+        "fast_window": [12],
+        "middle_window": [20],
+        "slow_window": [43],
+        "pullback_pct": [0.00125],
+        "min_fast_middle_spread_pct": [0.0005, 0.001],
+        "min_middle_slow_spread_pct": [0.001]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": [14, 21, 22],
+        "oversold": [18, 20, 21],
+        "overbought": [63, 64, 65]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_confirmation",
+      "params": {
+        "period": [22],
+        "oversold": [18, 21],
+        "overbought": [63, 64]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_crossdown_exit",
+      "params": {
+        "period": [22],
+        "oversold": [18, 21],
+        "overbought": [63, 64]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_ema_filter",
+      "params": {
+        "period": [22],
+        "oversold": [18, 21],
+        "overbought": [63, 64],
+        "filter_window": [50, 100, 150, 200]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_ema_slope_filter",
+      "params": {
+        "period": [22],
+        "oversold": [18, 21],
+        "overbought": [63, 64],
+        "filter_window": [100, 150, 200],
+        "slope_window": [3, 6]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_ema_stack_filter",
+      "params": {
+        "period": [22],
+        "oversold": [18, 21],
+        "overbought": [63, 64],
+        "fast_filter_window": [21, 50],
+        "slow_filter_window": [100, 200]
+      }
+    },
+    {
+      "name": "bollinger_mean_reversion",
+      "params": {
+        "period": [20, 22, 24, 30],
+        "band_width": [1.2, 1.5, 1.8, 2.0]
+      }
+    }
+  ]
+}

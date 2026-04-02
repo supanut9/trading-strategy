@@ -1,0 +1,7 @@
+interface:
+  display_name: "Experiment Review"
+  short_description: "Compare result files and judge whether a new run actually improved."
+  default_prompt: "Use $experiment-review to compare these result files and tell me whether the new candidate is better."
+
+policy:
+  allow_implicit_invocation: true

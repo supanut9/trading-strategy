@@ -1,0 +1,7 @@
+interface:
+  display_name: "Config Author"
+  short_description: "Create or refine experiment config JSON files for this repo."
+  default_prompt: "Use $config-author to create or refine an experiment config in configs/."
+
+policy:
+  allow_implicit_invocation: true

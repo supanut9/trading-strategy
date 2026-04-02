@@ -1,0 +1,33 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h RSI cooldown refinement",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h",
+    "notes": "Test cooldown and re-entry suppression around the leading 1h RSI cross-down branch."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "rsi_mean_reversion_crossdown_exit",
+      "params": {
+        "period": [24],
+        "oversold": [19],
+        "overbought": [64]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_crossdown_cooldown",
+      "params": {
+        "period": [24],
+        "oversold": [19],
+        "overbought": [64],
+        "cooldown_bars": [1, 2, 3, 4, 6, 8]
+      }
+    }
+  ]
+}

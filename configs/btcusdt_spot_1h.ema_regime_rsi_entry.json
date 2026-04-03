@@ -1,0 +1,26 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 1h EMA regime RSI entry",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "1h"
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 8760,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "ema_regime_rsi_entry",
+      "params": {
+        "period": [14, 16, 18, 20],
+        "oversold": [24, 28, 32],
+        "overbought": [58, 62, 66],
+        "trend_fast_window": [1, 2],
+        "trend_slow_window": [3, 4, 5, 6],
+        "timeframe_multiple": [4]
+      }
+    }
+  ]
+}

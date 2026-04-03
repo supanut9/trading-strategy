@@ -24,6 +24,7 @@ class StrategyRegistryTests(unittest.TestCase):
                 "rsi_mean_reversion_ema_stack_filter",
                 "rsi_ema_atr_price_structure",
                 "rsi_ema_atr_volatility_filter",
+                "ema_regime_rsi_entry",
                 "double_top_bottom_reversal",
                 "ema_cross",
                 "ema_cross_price_filter",
@@ -212,6 +213,36 @@ class StrategyRegistryTests(unittest.TestCase):
         self.assertEqual(
             strategies[2].parameters,
             {"fast_window": 9, "middle_window": 21, "slow_window": 55, "pullback_pct": 0.003},
+        )
+
+    def test_expand_strategy_grid_builds_multi_timeframe_variant(self) -> None:
+        strategies = expand_strategy_grid(
+            [
+                {
+                    "name": "ema_regime_rsi_entry",
+                    "params": {
+                        "period": [24],
+                        "oversold": [19, 20],
+                        "overbought": [62],
+                        "trend_fast_window": [3],
+                        "trend_slow_window": [5],
+                        "timeframe_multiple": [4],
+                    },
+                }
+            ]
+        )
+
+        self.assertEqual(len(strategies), 2)
+        self.assertEqual(
+            strategies[0].parameters,
+            {
+                "period": 24,
+                "oversold": 19,
+                "overbought": 62,
+                "trend_fast_window": 3,
+                "trend_slow_window": 5,
+                "timeframe_multiple": 4,
+            },
         )
 
     def test_expand_strategy_grid_builds_new_ema_refinements(self) -> None:

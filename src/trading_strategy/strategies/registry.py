@@ -36,6 +36,7 @@ from trading_strategy.strategies.multi_indicator.rsi_ema_atr_price_structure imp
 from trading_strategy.strategies.multi_indicator.rsi_ema_atr_volatility_filter import (
     RsiEmaAtrVolatilityFilterStrategy,
 )
+from trading_strategy.strategies.multi_timeframe.ema_regime_rsi_entry import EmaRegimeRsiEntryStrategy
 from trading_strategy.strategies.pattern.double_top_bottom_reversal import DoubleTopBottomReversalStrategy
 from trading_strategy.strategies.trend.ema_cross import EmaCrossStrategy
 from trading_strategy.strategies.trend.ema_cross_price_filter import EmaCrossPriceFilterStrategy
@@ -213,6 +214,12 @@ STRATEGY_REGISTRY: dict[str, StrategyDefinition] = {
         family="multi_indicator",
         description="RSI entry and cross-down exit with EMA regime and ATR volatility filter.",
         builder=RsiEmaAtrVolatilityFilterStrategy,
+    ),
+    "ema_regime_rsi_entry": StrategyDefinition(
+        name="ema_regime_rsi_entry",
+        family="multi_timeframe",
+        description="1h RSI mean-reversion entry and cross-down exit gated by a completed 4h EMA regime filter.",
+        builder=EmaRegimeRsiEntryStrategy,
     ),
     "donchian_breakout": StrategyDefinition(
         name="donchian_breakout",

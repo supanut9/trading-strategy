@@ -2,6 +2,12 @@
 
 This repository starts with one job: compare strategy ideas on historical data before wiring anything into a live auto-trading bot.
 
+Scope note:
+
+- this repository is for research only
+- live trading infrastructure belongs in a separate bot repository
+- see `docs/repo-boundaries.md` for the exact boundary
+
 Current focus:
 
 - market: `BTCUSDT`

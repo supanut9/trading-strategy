@@ -41,3 +41,7 @@ This repository has no established commit history yet, so use short imperative c
 ## Data & Output Hygiene
 
 Do not commit secrets or exchange credentials. Treat `data/` and `results/` as reproducible artifacts: keep raw inputs clean, avoid overwriting reference datasets silently, and write new outputs to clearly named files under `results/`.
+
+## Repo Scope
+
+This repository is for strategy research only. Keep it focused on backtests, validation, configs, results, and research documentation. Do not add live trading infrastructure such as exchange clients, order execution, API key handling, or real-time trading services. See `docs/repo-boundaries.md` for the full boundary.

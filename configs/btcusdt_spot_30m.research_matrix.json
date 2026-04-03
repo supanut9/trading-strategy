@@ -1,0 +1,108 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 30m research matrix",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "30m",
+    "notes": "Cross-family matrix across trend, mean reversion, and breakout variants on native 30m BTC spot candles."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 17520,
+  "max_workers": 5,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "ema_cross",
+      "params": {
+        "short_window": [12, 21],
+        "long_window": [55, 89]
+      }
+    },
+    {
+      "name": "ema_price_trend",
+      "params": {
+        "ema_window": [55, 100],
+        "slope_window": [3]
+      }
+    },
+    {
+      "name": "ema_triple_stack",
+      "params": {
+        "fast_window": [8],
+        "middle_window": [21, 34],
+        "slow_window": [89]
+      }
+    },
+    {
+      "name": "ema_triple_pullback",
+      "params": {
+        "fast_window": [9, 10],
+        "middle_window": [21],
+        "slow_window": [55],
+        "pullback_pct": [0.003, 0.005]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": [14, 22],
+        "oversold": [18, 21],
+        "overbought": [63, 64]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_confirmation",
+      "params": {
+        "period": [22],
+        "oversold": [18, 21],
+        "overbought": [63, 64]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_crossdown_exit",
+      "params": {
+        "period": [22],
+        "oversold": [18, 21],
+        "overbought": [63, 64]
+      }
+    },
+    {
+      "name": "bollinger_mean_reversion",
+      "params": {
+        "period": [20, 30],
+        "band_width": [1.5, 2.0]
+      }
+    },
+    {
+      "name": "donchian_breakout",
+      "params": {
+        "lookback": [20, 55],
+        "exit_lookback": [10, 20]
+      }
+    },
+    {
+      "name": "bollinger_squeeze_breakout",
+      "params": {
+        "period": [30],
+        "band_width": [2.0],
+        "squeeze_threshold_pct": [4.0, 6.0],
+        "breakout_lookback": [30, 55],
+        "exit_lookback": [10, 20]
+      }
+    },
+    {
+      "name": "bollinger_squeeze_breakout_trend_filter",
+      "params": {
+        "period": [30],
+        "band_width": [2.0],
+        "squeeze_threshold_pct": [4.0, 6.0],
+        "breakout_lookback": [30],
+        "exit_lookback": [10, 20],
+        "trend_ema_window": [100, 200],
+        "trend_slope_window": [3, 6]
+      }
+    }
+  ]
+}

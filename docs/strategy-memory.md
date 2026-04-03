@@ -28,6 +28,8 @@ Use the catalog under `docs/strategies/` to store each strategy family, its vari
 - template for new strategy docs: `docs/strategies/_template.md`
 - trend family:
   - `docs/strategies/trend/ema.md`
+- breakout family:
+  - `docs/strategies/breakout/squeeze_breakout.md`
 - mean reversion family:
   - `docs/strategies/mean_reversion/rsi.md`
   - `docs/strategies/mean_reversion/bollinger.md`
@@ -39,6 +41,7 @@ Use the catalog under `docs/strategies/` to store each strategy family, its vari
   - `docs/strategies/multi_indicator/rsi_ema_atr_price.md`
 - multi-timeframe family:
   - `docs/strategies/multi_timeframe/README.md`
+  - `docs/strategies/multi_timeframe/ema_regime_rsi_entry.md`
 
 ## Current Leaders
 
@@ -66,6 +69,15 @@ Use the catalog under `docs/strategies/` to store each strategy family, its vari
   - trades: `50`
   - win rate: `36.00%`
   - see: `docs/strategies/trend/ema.md`
+- best lower-timeframe exploratory candidate outside `1h`:
+  - `rsi_mean_reversion_confirmation 21 / 20 / 64` on `15m`
+  - total return: `+8.16%`
+  - max drawdown: `2.06%`
+  - Sharpe: `3.90`
+  - trades: `12`
+  - win rate: `66.67%`
+  - see: `docs/strategies/mean_reversion/rsi.md`
+  - status: recent-slice only; this branch did not hold on the later `15000`-candle extension
 
 ## Latest Chart
 
@@ -102,6 +114,24 @@ Current top plotted result:
   - it produced zero trades on both the tested `1h` and direct `4h` grids
 - the softer `RSI + EMA + ATR volatility` follow-up also failed:
   - it still produced zero trades on both the tested `1h` and direct `4h` grids
+- refined `4h` squeeze breakout with a light EMA trend filter improved the family:
+  - focused refinement improved it further to `+87.63%` with `15.73%` drawdown and `1.75` Sharpe
+  - the trend gate and tighter local search now make this a serious secondary `4h` branch
+  - the breakout leader then ranked first by Sharpe in all `4` direct-`4h` rolling windows against the top EMA pullback baselines
+  - that makes it more robust than it first appeared on the single full-sample comparison
+  - a `1.5 ATR` stop then produced the best-Sharpe breakout variant at `+81.39%`, `14.96%` drawdown, and `1.77` Sharpe
+  - rolling validation for that ATR-stop version stayed positive in all `4` windows, averaging `+26.77%` return, `8.67%` drawdown, and `1.58` Sharpe
+  - the trade-count caution still applies because each ATR-stop rolling window used only `5` to `8` trades
+- new lower-timeframe sweep results were mixed:
+  - `15m` RSI confirmation became a viable secondary branch after refinement
+  - direct head-to-head still favored `15m` RSI confirmation `21 / 20 / 64` on Sharpe and drawdown over `24 / 20 / 65`
+  - rolling validation for `15m` was supportive, but each window used only `3` to `6` trades, so confidence should stay moderate
+  - the later `15000`-candle extension weakened the case materially:
+  - all four tested `15m` candidates were negative on the full extended sample
+  - only `3` of `6` larger rolling windows were profitable
+  - current conclusion: keep `15m` as exploratory only, not as a validated branch
+  - `5m` was effectively noise in the first pass
+  - `30m` did not produce a profitable leader in the first pass
 
 ## Update Rules
 
@@ -145,6 +175,26 @@ Update the catalog when:
 - first-pass direct `4h` RSI + EMA + ATR + structure sweep: `results/btcusdt_spot_4h_rsi_ema_atr_price_5000.json`
 - softer `1h` RSI + EMA + ATR volatility sweep: `results/btcusdt_spot_1h_rsi_ema_atr_vol_5000.json`
 - softer direct `4h` RSI + EMA + ATR volatility sweep: `results/btcusdt_spot_4h_rsi_ema_atr_vol_5000.json`
+- first-pass direct `4h` squeeze breakout sweep: `results/btcusdt_spot_4h_squeeze_breakout_5000.json`
+- trend-filtered direct `4h` squeeze breakout sweep: `results/btcusdt_spot_4h_squeeze_breakout_trend_filter_5000.json`
+- focused trend-filtered direct `4h` squeeze breakout sweep: `results/btcusdt_spot_4h_squeeze_breakout_trend_focus_5000.json`
+- focused `15m` RSI confirmation refinement: `results/btcusdt_spot_15m_rsi_confirmation_refine_5000.json`
+- focused `15m` RSI confirmation head-to-head: `results/btcusdt_spot_15m_rsi_confirmation_head_to_head_5000.json`
+- extended `15m` RSI confidence check: `results/btcusdt_spot_15m_rsi_confidence_extension_15000.json`
+- focused `1h` RSI next refinement: `results/btcusdt_spot_1h_rsi_refine_next_5000.json`
+- rolling `15m` RSI window 1: `results/rolling/btcusdt_spot_15m_rsi_window_1.json`
+- rolling `15m` RSI window 2: `results/rolling/btcusdt_spot_15m_rsi_window_2.json`
+- rolling `15m` RSI window 3: `results/rolling/btcusdt_spot_15m_rsi_window_3.json`
+- rolling `15m` RSI window 4: `results/rolling/btcusdt_spot_15m_rsi_window_4.json`
+- rolling direct `4h` breakout window 1: `results/rolling/btcusdt_spot_4h_breakout_window_1.json`
+- rolling direct `4h` breakout window 2: `results/rolling/btcusdt_spot_4h_breakout_window_2.json`
+- rolling direct `4h` breakout window 3: `results/rolling/btcusdt_spot_4h_breakout_window_3.json`
+- rolling direct `4h` breakout window 4: `results/rolling/btcusdt_spot_4h_breakout_window_4.json`
+- focused direct `4h` breakout ATR execution sweep: `results/btcusdt_spot_4h_breakout_atr_execution_5000.json`
+- rolling direct `4h` breakout ATR window 1: `results/rolling/btcusdt_spot_4h_breakout_atr_window_1.json`
+- rolling direct `4h` breakout ATR window 2: `results/rolling/btcusdt_spot_4h_breakout_atr_window_2.json`
+- rolling direct `4h` breakout ATR window 3: `results/rolling/btcusdt_spot_4h_breakout_atr_window_3.json`
+- rolling direct `4h` breakout ATR window 4: `results/rolling/btcusdt_spot_4h_breakout_atr_window_4.json`
 - focused `1h` RSI ATR execution sweep: `results/btcusdt_spot_1h_rsi_atr_execution_5000.json`
 - focused direct `4h` EMA ATR execution sweep: `results/btcusdt_spot_4h_ema_atr_execution_5000.json`
 - focused `1h` RSI cooldown refinement: `results/btcusdt_spot_1h_rsi_cooldown_refine_5000.json`

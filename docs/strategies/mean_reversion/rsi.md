@@ -39,6 +39,7 @@ On `BTC 1h`, selective RSI mean reversion may capture profitable pullbacks with 
 - symbol: `BTCUSDT`
 - market: `spot`
 - tested timeframes:
+  - `15m`
   - `1h`
   - `4h` on direct Binance candles
 - default execution timeframe: `1h`
@@ -83,7 +84,7 @@ Top plotted `1h` RSI result:
 
 ![BTCUSDT spot 1h RSI focus refine top result](../../../results/btcusdt_spot_1h_rsi_focus_refine_5000.svg)
 
-### Candidate: `rsi_best_sharpe`
+### Candidate: `rsi_best_sharpe_1h`
 
 - variant: `rsi_crossdown_exit`
 - symbol: `BTCUSDT`
@@ -104,6 +105,28 @@ Top plotted `1h` RSI result:
 - win rate: `63.64%`
 - exposure: `14.68%`
 - why it matters: best risk-adjusted RSI candidate found so far on the current `1h` sample
+
+### Candidate: `rsi_best_sharpe_15m`
+
+- variant: `rsi_confirmation_entry`
+- symbol: `BTCUSDT`
+- market: `spot`
+- timeframe: `15m`
+- dataset file: `data/btcusdt_spot_15m_5000.csv`
+- test window: `2026-02-09 07:00 UTC` to `2026-04-02 08:45 UTC`
+- parameters:
+  - `period = 21`
+  - `oversold = 20`
+  - `overbought = 64`
+- config: `configs/btcusdt_spot_15m.rsi_confirmation_refine.json`
+- result file: `results/btcusdt_spot_15m_rsi_confirmation_refine_5000.json`
+- total return: `+8.16%`
+- max drawdown: `2.06%`
+- Sharpe: `3.90`
+- trades: `12`
+- win rate: `66.67%`
+- exposure: `8.08%`
+- why it matters: strongest lower-timeframe RSI result so far, with a notably cleaner risk profile than the first-pass `15m` matrix leader
 
 ### Candidate: `rsi_best_winrate`
 
@@ -165,6 +188,21 @@ Top plotted `1h` RSI result:
   - only ATR take-profit helped the high-win-rate plain RSI branch, lifting `24 / 20 / 62` to `+23.97%` and `2.12` Sharpe with a `4 ATR` target
   - cooldown / re-entry suppression also did nothing around the top cross-down leader
   - cooldown settings from `1` to `8` bars produced the exact same metrics as the base result, which implies this branch does not re-enter too quickly on the current sample
+- `15m`:
+  - first-pass matrix favored `rsi_confirmation_entry` over plain RSI and cross-down exit
+  - focused refinement improved that branch materially
+  - best result is now `rsi_mean_reversion_confirmation 21 / 20 / 64`
+  - result: `+8.16%`, max drawdown `2.06%`, Sharpe `3.90`, trades `12`, win rate `66.67%`
+  - direct head-to-head against the nearest challenger kept `21 / 20 / 64` as the better risk-adjusted choice
+  - `24 / 20 / 65` did post slightly higher raw return at `+8.79%`, but with higher drawdown at `4.15%` and slightly lower Sharpe at `3.81`
+  - rolling validation was supportive but low-sample:
+  - `24 / 20 / 65` ranked first in `3` of `4` overlapping windows
+  - `21 / 20 / 64` ranked first in the remaining window
+  - all `4` windows stayed profitable for the two confirmation-entry leaders, but each window used only `3` to `6` trades
+  - longer-history confidence extension then failed:
+  - on `15000` candles, the prior leader `21 / 20 / 64` fell to `-5.54%` return, `18.84%` drawdown, and `-0.55` Sharpe
+  - across `6` larger rolling windows, only `3` were profitable at all, and plain RSI `22 / 21 / 64` actually won `3` windows
+  - conclusion: `15m` RSI is now best treated as a recent-slice opportunity, not a validated robust branch
 - `4h`:
   - direct Binance `4h` candles support the RSI branch
   - the broader matrix slightly favored the cross-down exit variant over plain RSI
@@ -176,6 +214,71 @@ Top plotted `1h` RSI result:
   - conclusion: `4h` RSI remains interesting, but direct `4h` EMA is currently the cleaner branch on robustness and drawdown
 
 ## Experiment History
+
+### Experiment
+
+- date: `2026-04-02`
+- variant: `rsi_confirmation_entry`, `plain_rsi_mean_reversion`, and `rsi_crossdown_exit`
+- symbol: `BTCUSDT`
+- market: `spot`
+- timeframe: `15m`
+- dataset file: `data/btcusdt_spot_15m_5000.csv`
+- test window: `2026-02-09 07:00 UTC` to `2026-04-02 08:45 UTC`
+- hypothesis: the promising first-pass `15m` confirmation-entry pocket can be improved by a tighter local search around the period-22 neighborhood
+- config: `configs/btcusdt_spot_15m.rsi_confirmation_refine.json`
+- result file: `results/btcusdt_spot_15m_rsi_confirmation_refine_5000.json`
+- conclusion: confirmation entry clearly remained the best `15m` branch and improved to `+8.16%` return with `3.90` Sharpe at `21 / 20 / 64`
+
+### Experiment
+
+- date: `2026-04-02`
+- variant: `rsi_confirmation_entry 21 / 20 / 64` vs `rsi_confirmation_entry 24 / 20 / 65` vs nearby plain and cross-down variants on overlapping rolling windows
+- symbol: `BTCUSDT`
+- market: `spot`
+- timeframe: `15m`
+- dataset file:
+  - `data/rolling/btcusdt_spot_15m_window_1.csv`
+  - `data/rolling/btcusdt_spot_15m_window_2.csv`
+  - `data/rolling/btcusdt_spot_15m_window_3.csv`
+  - `data/rolling/btcusdt_spot_15m_window_4.csv`
+- test window:
+  - `4` overlapping windows of `2000` candles with `1000`-candle step
+- hypothesis: the new `15m` confirmation-entry leader should stay near the top across rolling windows if the edge is not just one favorable slice
+- config: `configs/btcusdt_spot_15m.rsi_window_validation.json`
+- result file:
+  - `results/rolling/btcusdt_spot_15m_rsi_window_1.json`
+  - `results/rolling/btcusdt_spot_15m_rsi_window_2.json`
+  - `results/rolling/btcusdt_spot_15m_rsi_window_3.json`
+  - `results/rolling/btcusdt_spot_15m_rsi_window_4.json`
+- conclusion: the confirmation-entry branch won every `15m` rolling window, but leadership flipped between `24 / 20 / 65` and `21 / 20 / 64`, and each window used very few trades, so the signal is promising but still low-confidence
+
+### Experiment
+
+- date: `2026-04-02`
+- variant: `rsi_confirmation_entry 21 / 20 / 64` vs `rsi_confirmation_entry 24 / 20 / 65` and nearby confirmation settings
+- symbol: `BTCUSDT`
+- market: `spot`
+- timeframe: `15m`
+- dataset file: `data/btcusdt_spot_15m_5000.csv`
+- test window: `2026-02-09 07:00 UTC` to `2026-04-02 08:45 UTC`
+- hypothesis: the local `15m` winner should still beat the nearby `24 / 20 / 65` pocket on risk-adjusted quality when compared directly
+- config: `configs/btcusdt_spot_15m.rsi_confirmation_head_to_head.json`
+- result file: `results/btcusdt_spot_15m_rsi_confirmation_head_to_head_5000.json`
+- conclusion: the direct comparison did not change the leader; `21 / 20 / 64` stayed best by Sharpe and drawdown, while `24 / 20 / 65` remained only a slightly higher-return alternative
+
+### Experiment
+
+- date: `2026-04-02`
+- variant: `rsi_confirmation_entry 21 / 20 / 64`, `rsi_confirmation_entry 24 / 20 / 65`, and nearby RSI alternatives on extended `15m` history
+- symbol: `BTCUSDT`
+- market: `spot`
+- timeframe: `15m`
+- dataset file: `data/btcusdt_spot_15m_15000.csv`
+- test window: approximately `2025-10-28` to `2026-04-02`
+- hypothesis: if the `15m` branch is real, it should remain competitive on a much longer history and on larger rolling windows with better trade counts
+- config: `configs/btcusdt_spot_15m.rsi_confidence_extension.json`
+- result file: `results/btcusdt_spot_15m_rsi_confidence_extension_15000.json`
+- conclusion: confidence did not improve; all four candidates were negative on the full `15000`-candle run, the prior `21 / 20 / 64` leader dropped to `-5.54%` return with `-0.55` Sharpe, and only `3` of `6` larger windows were profitable
 
 ### Experiment
 
@@ -227,6 +330,20 @@ Top plotted `1h` RSI result:
   - `results/rolling/btcusdt_spot_1h_rsi_window_3.json`
   - `results/rolling/btcusdt_spot_1h_rsi_window_4.json`
 - conclusion: `rsi_mean_reversion_crossdown_exit 24 / 19 / 64` ranked first in all `4` rolling windows and stayed profitable in every one, which is a strong robustness signal even though the first two windows used only `2` trades each
+
+### Experiment
+
+- date: `2026-04-02`
+- variant: `plain_rsi_mean_reversion`, `rsi_confirmation_entry`, and `rsi_crossdown_exit`
+- symbol: `BTCUSDT`
+- market: `spot`
+- timeframe: `1h`
+- dataset file: `data/btcusdt_spot_1h_5000.csv`
+- test window: `2025-09-05 03:00 UTC` to `2026-04-01 10:00 UTC`
+- hypothesis: the broad `1h` matrix winners should be rechecked with a denser local grid around the `period 24` region
+- config: `configs/btcusdt_spot_1h.rsi_refine_next.json`
+- result file: `results/btcusdt_spot_1h_rsi_refine_next_5000.json`
+- conclusion: the refinement confirmed `rsi_mean_reversion_crossdown_exit 24 / 19 / 64` as the best Sharpe leader and also showed the plain and confirmation branches remain competitive nearby
 
 ### Experiment
 

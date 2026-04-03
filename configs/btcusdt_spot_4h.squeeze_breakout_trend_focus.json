@@ -1,0 +1,29 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 4h squeeze breakout trend focus",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "4h",
+    "notes": "Focused refinement around the leading 4h squeeze breakout trend-filter region."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 2190,
+  "max_workers": 5,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "bollinger_squeeze_breakout_trend_filter",
+      "params": {
+        "period": [30],
+        "band_width": [2.0],
+        "squeeze_threshold_pct": [3.5, 4.0, 4.5, 5.0],
+        "breakout_lookback": [25, 30, 35],
+        "exit_lookback": [8, 10, 12],
+        "trend_ema_window": [150, 200, 250],
+        "trend_slope_window": [3, 6]
+      }
+    }
+  ]
+}

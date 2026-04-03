@@ -1,0 +1,27 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 4h squeeze breakout",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "4h",
+    "notes": "First pass for Bollinger squeeze gated breakouts on direct Binance 4h candles."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 252,
+  "max_workers": 5,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "bollinger_squeeze_breakout",
+      "params": {
+        "period": [20, 30],
+        "band_width": [2.0],
+        "squeeze_threshold_pct": [4.0, 6.0, 8.0],
+        "breakout_lookback": [20, 30, 55],
+        "exit_lookback": [10, 20]
+      }
+    }
+  ]
+}

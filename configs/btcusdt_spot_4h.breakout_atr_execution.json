@@ -1,0 +1,46 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 4h breakout ATR execution sweep",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "4h",
+    "notes": "Test ATR stop-loss and take-profit execution rules around the validated 4h breakout leader."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 2190,
+  "max_workers": 5,
+  "ranking_metric": "sharpe",
+  "risk_management": {
+    "atr_period": 14,
+    "stop_loss_atr_multiple": [null, 1.5, 2.0, 2.5, 3.0],
+    "take_profit_atr_multiple": [null, 4.0, 6.0]
+  },
+  "strategies": [
+    {
+      "name": "bollinger_squeeze_breakout_trend_filter",
+      "params": {
+        "period": [30],
+        "band_width": [2.0],
+        "squeeze_threshold_pct": [3.5],
+        "breakout_lookback": [30],
+        "exit_lookback": [10],
+        "trend_ema_window": [200],
+        "trend_slope_window": [3]
+      }
+    },
+    {
+      "name": "bollinger_squeeze_breakout_trend_filter",
+      "params": {
+        "period": [30],
+        "band_width": [2.0],
+        "squeeze_threshold_pct": [3.5],
+        "breakout_lookback": [30],
+        "exit_lookback": [10],
+        "trend_ema_window": [250],
+        "trend_slope_window": [3]
+      }
+    }
+  ]
+}

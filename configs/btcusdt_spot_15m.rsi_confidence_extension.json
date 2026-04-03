@@ -1,0 +1,49 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 15m RSI confidence extension",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "15m",
+    "notes": "Extended-sample validation for the leading 15m RSI confirmation candidate against the nearest nearby confirmation, plain, and cross-down variants."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 35040,
+  "max_workers": 5,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "rsi_mean_reversion_confirmation",
+      "params": {
+        "period": 21,
+        "oversold": 20,
+        "overbought": 64
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_confirmation",
+      "params": {
+        "period": 24,
+        "oversold": 20,
+        "overbought": 65
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": 22,
+        "oversold": 21,
+        "overbought": 64
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_crossdown_exit",
+      "params": {
+        "period": 22,
+        "oversold": 21,
+        "overbought": 64
+      }
+    }
+  ]
+}

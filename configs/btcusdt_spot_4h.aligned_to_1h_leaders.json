@@ -1,0 +1,37 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot aligned 4h leaders on 1h rolling windows",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "4h",
+    "notes": "Matches the strongest direct-4h EMA pullback leader and strongest direct-4h breakout leader against the existing 1h rolling-window calendar slices."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 2190,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "ema_triple_pullback",
+      "params": {
+        "fast_window": 10,
+        "middle_window": 21,
+        "slow_window": 55,
+        "pullback_pct": 0.0025
+      }
+    },
+    {
+      "name": "bollinger_squeeze_breakout_trend_filter",
+      "params": {
+        "period": 30,
+        "band_width": 2.0,
+        "squeeze_threshold_pct": 3.5,
+        "breakout_lookback": 30,
+        "exit_lookback": 10,
+        "trend_ema_window": 200,
+        "trend_slope_window": 3
+      }
+    }
+  ]
+}

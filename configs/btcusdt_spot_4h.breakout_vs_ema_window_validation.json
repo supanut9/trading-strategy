@@ -1,0 +1,47 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot 4h breakout vs EMA rolling validation",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "4h",
+    "notes": "Rolling-window comparison between the refined 4h breakout leader and the strongest nearby EMA pullback baselines."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 2190,
+  "max_workers": 5,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "bollinger_squeeze_breakout_trend_filter",
+      "params": {
+        "period": 30,
+        "band_width": 2.0,
+        "squeeze_threshold_pct": 3.5,
+        "breakout_lookback": 30,
+        "exit_lookback": 10,
+        "trend_ema_window": 200,
+        "trend_slope_window": 3
+      }
+    },
+    {
+      "name": "ema_triple_pullback",
+      "params": {
+        "fast_window": 10,
+        "middle_window": 22,
+        "slow_window": 55,
+        "pullback_pct": 0.0025
+      }
+    },
+    {
+      "name": "ema_triple_pullback",
+      "params": {
+        "fast_window": 10,
+        "middle_window": 21,
+        "slow_window": 55,
+        "pullback_pct": 0.0025
+      }
+    }
+  ]
+}

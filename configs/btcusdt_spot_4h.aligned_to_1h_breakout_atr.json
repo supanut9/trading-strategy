@@ -1,0 +1,32 @@
+{
+  "experiment": {
+    "label": "BTCUSDT spot aligned 4h breakout ATR on 1h rolling windows",
+    "symbol": "BTCUSDT",
+    "market_type": "spot",
+    "timeframe": "4h",
+    "notes": "Validates the strongest ATR-stop breakout leader on the same calendar windows used by the 1h RSI rolling validation."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 10,
+  "slippage_bps": 5,
+  "bars_per_year": 2190,
+  "ranking_metric": "sharpe",
+  "strategies": [
+    {
+      "name": "bollinger_squeeze_breakout_trend_filter",
+      "params": {
+        "period": 30,
+        "band_width": 2.0,
+        "squeeze_threshold_pct": 3.5,
+        "breakout_lookback": 30,
+        "exit_lookback": 10,
+        "trend_ema_window": 200,
+        "trend_slope_window": 3
+      }
+    }
+  ],
+  "risk_management": {
+    "atr_period": 14,
+    "stop_loss_atr_multiple": 1.5
+  }
+}

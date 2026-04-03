@@ -95,6 +95,8 @@ Recommended rule:
 
 ## Current Catalog
 
+- breakout
+  - `docs/strategies/breakout/squeeze_breakout.md`
 - trend
   - `docs/strategies/trend/ema.md`
 - mean reversion
@@ -108,6 +110,7 @@ Recommended rule:
   - `docs/strategies/multi_indicator/rsi_ema_atr_price.md`
 - multi timeframe
   - `docs/strategies/multi_timeframe/README.md`
+  - `docs/strategies/multi_timeframe/ema_regime_rsi_entry.md`
 
 ## Standard Sections Per Strategy File
 

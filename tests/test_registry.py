@@ -11,6 +11,8 @@ class StrategyRegistryTests(unittest.TestCase):
             [definition.name for definition in catalog],
             [
                 "buy_and_hold",
+                "bollinger_squeeze_breakout",
+                "bollinger_squeeze_breakout_trend_filter",
                 "donchian_breakout",
                 "bollinger_mean_reversion",
                 "rsi_mean_reversion",
@@ -54,6 +56,66 @@ class StrategyRegistryTests(unittest.TestCase):
         self.assertEqual(len(strategies), 4)
         self.assertEqual(strategies[0].parameters, {"short_window": 12, "long_window": 72})
         self.assertEqual(strategies[-1].parameters, {"short_window": 24, "long_window": 144})
+
+    def test_expand_strategy_grid_builds_bollinger_squeeze_breakout_parameters(self) -> None:
+        strategies = expand_strategy_grid(
+            [
+                {
+                    "name": "bollinger_squeeze_breakout",
+                    "params": {
+                        "period": [20],
+                        "band_width": [2.0],
+                        "squeeze_threshold_pct": [4.0, 6.0],
+                        "breakout_lookback": [20],
+                        "exit_lookback": [10],
+                    },
+                }
+            ]
+        )
+
+        self.assertEqual(len(strategies), 2)
+        self.assertEqual(
+            strategies[0].parameters,
+            {
+                "period": 20,
+                "band_width": 2.0,
+                "squeeze_threshold_pct": 4.0,
+                "breakout_lookback": 20,
+                "exit_lookback": 10,
+            },
+        )
+
+    def test_expand_strategy_grid_builds_bollinger_squeeze_breakout_trend_filter_parameters(self) -> None:
+        strategies = expand_strategy_grid(
+            [
+                {
+                    "name": "bollinger_squeeze_breakout_trend_filter",
+                    "params": {
+                        "period": [30],
+                        "band_width": [2.0],
+                        "squeeze_threshold_pct": [4.0],
+                        "breakout_lookback": [55],
+                        "exit_lookback": [20],
+                        "trend_ema_window": [100, 150],
+                        "trend_slope_window": [3],
+                    },
+                }
+            ]
+        )
+
+        self.assertEqual(len(strategies), 2)
+        self.assertEqual(
+            strategies[0].parameters,
+            {
+                "period": 30,
+                "band_width": 2.0,
+                "squeeze_threshold_pct": 4.0,
+                "breakout_lookback": 55,
+                "exit_lookback": 20,
+                "trend_ema_window": 100,
+                "trend_slope_window": 3,
+            },
+        )
 
     def test_expand_strategy_grid_builds_ema_cross_parameters(self) -> None:
         strategies = expand_strategy_grid(

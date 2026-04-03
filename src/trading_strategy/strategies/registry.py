@@ -5,6 +5,10 @@ from itertools import product
 
 from trading_strategy.strategies.base import Strategy
 from trading_strategy.strategies.benchmark.buy_and_hold import BuyAndHoldStrategy
+from trading_strategy.strategies.breakout.bollinger_squeeze_breakout import BollingerSqueezeBreakoutStrategy
+from trading_strategy.strategies.breakout.bollinger_squeeze_breakout_trend_filter import (
+    BollingerSqueezeBreakoutTrendFilterStrategy,
+)
 from trading_strategy.strategies.breakout.donchian_breakout import DonchianBreakoutStrategy
 from trading_strategy.strategies.mean_reversion.bollinger_mean_reversion import BollingerMeanReversionStrategy
 from trading_strategy.strategies.mean_reversion.rsi_mean_reversion import RsiMeanReversionStrategy
@@ -65,6 +69,18 @@ STRATEGY_REGISTRY: dict[str, StrategyDefinition] = {
         family="benchmark",
         description="Benchmark that enters once and stays long.",
         builder=BuyAndHoldStrategy,
+    ),
+    "bollinger_squeeze_breakout": StrategyDefinition(
+        name="bollinger_squeeze_breakout",
+        family="breakout",
+        description="Long-only breakout that requires Bollinger bandwidth compression before a channel breakout.",
+        builder=BollingerSqueezeBreakoutStrategy,
+    ),
+    "bollinger_squeeze_breakout_trend_filter": StrategyDefinition(
+        name="bollinger_squeeze_breakout_trend_filter",
+        family="breakout",
+        description="Bollinger squeeze breakout gated by price above a rising trend EMA.",
+        builder=BollingerSqueezeBreakoutTrendFilterStrategy,
     ),
     "bollinger_mean_reversion": StrategyDefinition(
         name="bollinger_mean_reversion",

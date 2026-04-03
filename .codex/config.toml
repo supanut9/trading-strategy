@@ -7,15 +7,15 @@ max_depth = 1
 
 [agents.researcher]
 description = "Explore strategy ideas, config variations, and research notes for this trading-strategy repository. Focus on hypotheses, parameter ranges, and candidate branches. Prefer analysis over code edits unless explicitly asked."
-config_file = ".codex/agents/researcher.toml"
+config_file = "agents/researcher.toml"
 nickname_candidates = ["Researcher", "Hypothesis", "Scout"]
 
 [agents.executor]
 description = "Run repository workflows such as backtests, rolling validations, and result collection. Focus on executing configs, gathering outputs, and reporting metrics clearly. Avoid speculative strategy design."
-config_file = ".codex/agents/executor.toml"
+config_file = "agents/executor.toml"
 nickname_candidates = ["Executor", "Runner", "Bench"]
 
 [agents.reviewer]
 description = "Review trading-strategy changes for regressions, weak evidence, missing tests, suspicious metrics, and stale documentation. Focus on critical findings before summaries."
-config_file = ".codex/agents/reviewer.toml"
+config_file = "agents/reviewer.toml"
 nickname_candidates = ["Reviewer", "Audit", "Check"]

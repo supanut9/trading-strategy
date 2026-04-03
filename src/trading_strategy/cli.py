@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from concurrent.futures import ProcessPoolExecutor
 from itertools import product
 from pathlib import Path
 
@@ -25,18 +26,23 @@ DEFAULT_COLUMNS = (
 )
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Compare trading strategies on historical CSV data.")
     parser.add_argument("--data", help="Path to OHLCV CSV file")
     parser.add_argument("--config", help="Path to experiment config JSON")
     parser.add_argument("--output", help="Optional output JSON path")
     parser.add_argument("--plot-output", help="Optional output SVG path for the top-ranked strategy chart")
     parser.add_argument(
+        "--max-workers",
+        type=int,
+        help="Maximum number of strategies to backtest in parallel",
+    )
+    parser.add_argument(
         "--list-strategies",
         action="store_true",
         help="Print the registered strategy catalog and exit",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.list_strategies:
         _print_strategy_catalog()
@@ -51,22 +57,18 @@ def main() -> int:
     risk_profiles = _expand_parameter_grid(config.get("risk_management"))
     ranking_metric = config.get("ranking_metric", "sharpe")
     experiment = config.get("experiment", {})
+    max_workers = _resolve_max_workers(args.max_workers, config.get("max_workers"))
 
-    results = [
-        run_backtest(
-            candles,
-            strategy,
-            initial_cash=float(config.get("initial_cash", 10_000)),
-            commission_bps=float(config.get("commission_bps", 0)),
-            slippage_bps=float(config.get("slippage_bps", 0)),
-            bars_per_year=int(config.get("bars_per_year", 252)),
-            atr_period=_optional_int(risk_profile.get("atr_period")),
-            stop_loss_atr_multiple=_optional_float(risk_profile.get("stop_loss_atr_multiple")),
-            take_profit_atr_multiple=_optional_float(risk_profile.get("take_profit_atr_multiple")),
-        )
-        for strategy in strategies
-        for risk_profile in risk_profiles
-    ]
+    tasks = _build_backtest_tasks(
+        candles=candles,
+        strategies=strategies,
+        risk_profiles=risk_profiles,
+        initial_cash=float(config.get("initial_cash", 10_000)),
+        commission_bps=float(config.get("commission_bps", 0)),
+        slippage_bps=float(config.get("slippage_bps", 0)),
+        bars_per_year=int(config.get("bars_per_year", 252)),
+    )
+    results = _run_backtests(tasks, max_workers=max_workers)
     results.sort(key=lambda result: _metric_value(result.to_dict()["metrics"], ranking_metric), reverse=True)
 
     _print_ranked_results(results, ranking_metric, experiment)
@@ -94,6 +96,56 @@ def main() -> int:
 
 def _load_json(path: str) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def _build_backtest_tasks(
+    *,
+    candles,
+    strategies,
+    risk_profiles: list[dict],
+    initial_cash: float,
+    commission_bps: float,
+    slippage_bps: float,
+    bars_per_year: int,
+) -> list[dict]:
+    return [
+        {
+            "candles": candles,
+            "strategy": strategy,
+            "initial_cash": initial_cash,
+            "commission_bps": commission_bps,
+            "slippage_bps": slippage_bps,
+            "bars_per_year": bars_per_year,
+            "atr_period": _optional_int(risk_profile.get("atr_period")),
+            "stop_loss_atr_multiple": _optional_float(risk_profile.get("stop_loss_atr_multiple")),
+            "take_profit_atr_multiple": _optional_float(risk_profile.get("take_profit_atr_multiple")),
+        }
+        for strategy in strategies
+        for risk_profile in risk_profiles
+    ]
+
+
+def _run_single_backtest(task: dict):
+    return run_backtest(**task)
+
+
+def _run_backtests(tasks: list[dict], *, max_workers: int):
+    if max_workers == 1:
+        return [_run_single_backtest(task) for task in tasks]
+
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        return list(executor.map(_run_single_backtest, tasks))
+
+
+def _resolve_max_workers(cli_value: int | None, config_value) -> int:
+    raw_value = cli_value if cli_value is not None else config_value
+    if raw_value is None:
+        return 1
+
+    max_workers = int(raw_value)
+    if max_workers <= 0:
+        raise ValueError("max_workers must be positive")
+    return max_workers
 
 
 def _expand_parameter_grid(spec: dict | None) -> list[dict]:

@@ -3,6 +3,7 @@
   "commission_bps": 10,
   "slippage_bps": 5,
   "bars_per_year": 252,
+  "max_workers": 5,
   "ranking_metric": "sharpe",
   "strategies": [
     {

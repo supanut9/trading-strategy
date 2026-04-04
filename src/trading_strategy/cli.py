@@ -8,6 +8,7 @@ from pathlib import Path
 
 from trading_strategy.backtest import run_backtest
 from trading_strategy.data import load_ohlcv_csv
+from trading_strategy.portfolio import compare_portfolio_from_config
 from trading_strategy.plotting import write_backtest_svg
 from trading_strategy.strategies import available_strategies, expand_strategy_grid
 
@@ -30,6 +31,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Compare trading strategies on historical CSV data.")
     parser.add_argument("--data", help="Path to OHLCV CSV file")
     parser.add_argument("--config", help="Path to experiment config JSON")
+    parser.add_argument("--portfolio-config", help="Path to portfolio comparison config JSON")
     parser.add_argument("--output", help="Optional output JSON path")
     parser.add_argument("--plot-output", help="Optional output SVG path for the top-ranked strategy chart")
     parser.add_argument(
@@ -48,8 +50,33 @@ def main(argv: list[str] | None = None) -> int:
         _print_strategy_catalog()
         return 0
 
+    if args.portfolio_config:
+        if args.data or args.config:
+            parser.error("--portfolio-config cannot be combined with --data or --config")
+        if args.plot_output:
+            parser.error("--plot-output is not supported with --portfolio-config")
+
+        config = _load_json(args.portfolio_config)
+        result = compare_portfolio_from_config(
+            config,
+            base_path=Path(args.portfolio_config).resolve().parent,
+        )
+        experiment = config.get("experiment", {})
+        _print_portfolio_result(result, experiment)
+
+        if args.output:
+            output_path = Path(args.output)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            payload = {
+                "experiment": experiment,
+                "portfolio": result.to_dict(),
+            }
+            output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+        return 0
+
     if not args.data or not args.config:
-        parser.error("--data and --config are required unless --list-strategies is used")
+        parser.error("--data and --config are required unless --list-strategies or --portfolio-config is used")
 
     config = _load_json(args.config)
     candles = load_ohlcv_csv(args.data)
@@ -198,6 +225,51 @@ def _print_ranked_results(results: list, ranking_metric: str, experiment: dict) 
             _format_number(metrics["exposure_pct"]),
         )
         print(_row(row))
+
+
+def _print_portfolio_result(result, experiment: dict) -> None:
+    if experiment:
+        print(f"Portfolio experiment: {experiment.get('label', 'unnamed')}")
+        if experiment.get("notes"):
+            print(f"Notes: {experiment['notes']}")
+    print("Portfolio metrics:")
+    print(
+        _row(
+            (
+                "total_return_pct",
+                "annualized_return_pct",
+                "max_drawdown_pct",
+                "sharpe",
+                "exposure_pct",
+            )
+        )
+    )
+    metrics = result.metrics.to_dict()
+    print(
+        _row(
+            (
+                _format_number(metrics["total_return_pct"]),
+                _format_number(metrics["annualized_return_pct"]),
+                _format_number(metrics["max_drawdown_pct"]),
+                _format_number(metrics["sharpe"]),
+                _format_number(metrics["exposure_pct"]),
+            )
+        )
+    )
+    print("Components:")
+    print(_row(("label", "weight", "strategy", "params", "source_rank")))
+    for component in result.components:
+        print(
+            _row(
+                (
+                    component.label,
+                    _format_number(component.weight * 100),
+                    component.strategy_name,
+                    _format_params(component.parameters | component.execution_parameters),
+                    str(component.result_rank),
+                )
+            )
+        )
 
 
 def _row(values: tuple[str, ...] | tuple) -> str:

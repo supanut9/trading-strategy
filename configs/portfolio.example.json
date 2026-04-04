@@ -1,0 +1,22 @@
+{
+  "experiment": {
+    "label": "Example Sleeve Comparison",
+    "notes": "Research-only weighted comparison across already-generated result files."
+  },
+  "initial_cash": 1000,
+  "bars_per_year": 8760,
+  "components": [
+    {
+      "label": "ema_4h_core",
+      "result_file": "../results/btcusdt_spot_4h_ema_refine_5000.json",
+      "result_rank": 1,
+      "weight": 0.6
+    },
+    {
+      "label": "breakout_4h_satellite",
+      "result_file": "../results/btcusdt_spot_4h_breakout_atr_execution_5000.json",
+      "result_rank": 1,
+      "weight": 0.4
+    }
+  ]
+}

@@ -32,6 +32,39 @@ def compute_metrics(
     profit_factor = gross_profit / gross_loss if gross_loss else (math.inf if gross_profit > 0 else 0.0)
     exposure = exposure_bars / total_bars if total_bars else 0.0
 
+    return compute_equity_curve_metrics(
+        equity_curve,
+        initial_cash=initial_cash,
+        bars_per_year=bars_per_year,
+        exposure_pct=exposure * 100,
+        trade_count=trade_count,
+        win_rate_pct=win_rate * 100,
+        profit_factor=profit_factor,
+    )
+
+
+def compute_equity_curve_metrics(
+    equity_curve: list[float],
+    *,
+    initial_cash: float,
+    bars_per_year: int,
+    exposure_pct: float = 0.0,
+    trade_count: int = 0,
+    win_rate_pct: float = 0.0,
+    profit_factor: float = 0.0,
+) -> Metrics:
+    ending_equity = equity_curve[-1]
+    total_return = (ending_equity / initial_cash) - 1
+    annualized_return = _annualized_return(
+        ending_equity=ending_equity,
+        initial_cash=initial_cash,
+        periods=max(1, len(equity_curve) - 1),
+        bars_per_year=bars_per_year,
+    )
+    returns = _period_returns(equity_curve)
+    sharpe = _sharpe_ratio(returns, bars_per_year)
+    max_drawdown = _max_drawdown(equity_curve)
+
     return Metrics(
         ending_equity=ending_equity,
         total_return_pct=total_return * 100,
@@ -39,9 +72,9 @@ def compute_metrics(
         max_drawdown_pct=max_drawdown * 100,
         sharpe=sharpe,
         trade_count=trade_count,
-        win_rate_pct=win_rate * 100,
+        win_rate_pct=win_rate_pct,
         profit_factor=profit_factor,
-        exposure_pct=exposure * 100,
+        exposure_pct=exposure_pct,
     )
 
 

@@ -98,10 +98,83 @@ class PortfolioComparisonTests(unittest.TestCase):
             self.assertEqual(result.components[0].strategy_name, "second")
             self.assertEqual(result.equity_curve, [1000.0, 1200.0])
 
+    def test_compare_portfolio_aligns_mixed_timeframes_with_data_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = Path(temp_dir)
+            one_hour_result = _write_result_file(
+                base_path / "one_hour.json",
+                equity_curve=[1000.0, 1100.0, 1210.0],
+                exposure_pct=30.0,
+                strategy_name="one_hour",
+            )
+            four_hour_result = _write_result_file(
+                base_path / "four_hour.json",
+                equity_curve=[1000.0, 1200.0],
+                exposure_pct=10.0,
+                strategy_name="four_hour",
+            )
+            _write_data_file(
+                base_path / "one_hour.csv",
+                timestamps=["2024-01-01 00:00", "2024-01-01 01:00", "2024-01-01 02:00"],
+            )
+            _write_data_file(
+                base_path / "four_hour.csv",
+                timestamps=["2024-01-01 00:00", "2024-01-01 02:00"],
+            )
+
+            result = compare_portfolio_from_config(
+                {
+                    "initial_cash": 1000,
+                    "bars_per_year": 252,
+                    "components": [
+                        {
+                            "result_file": one_hour_result.name,
+                            "data_file": "one_hour.csv",
+                            "weight": 0.5,
+                        },
+                        {
+                            "result_file": four_hour_result.name,
+                            "data_file": "four_hour.csv",
+                            "weight": 0.5,
+                        },
+                    ],
+                },
+                base_path=base_path,
+            )
+
+            self.assertEqual(result.equity_curve, [1000.0, 1050.0, 1205.0])
+            self.assertAlmostEqual(result.metrics.total_return_pct, 20.5)
+
+    def test_compare_portfolio_requires_all_components_to_provide_data_files_when_alignment_is_used(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = Path(temp_dir)
+            first_result = _write_result_file(base_path / "first.json", equity_curve=[1000.0, 1100.0], exposure_pct=10.0)
+            second_result = _write_result_file(base_path / "second.json", equity_curve=[1000.0, 1050.0], exposure_pct=20.0)
+            _write_data_file(base_path / "first.csv", timestamps=["2024-01-01 00:00", "2024-01-01 01:00"])
+
+            with self.assertRaisesRegex(ValueError, "all portfolio components must provide data_file"):
+                compare_portfolio_from_config(
+                    {
+                        "components": [
+                            {"result_file": first_result.name, "data_file": "first.csv", "weight": 0.5},
+                            {"result_file": second_result.name, "weight": 0.5},
+                        ]
+                    },
+                    base_path=base_path,
+                )
+
 
 def _write_result_file(path: Path, *, equity_curve: list[float], exposure_pct: float, strategy_name: str = "strategy") -> Path:
     payload = {"results": [_result_payload(equity_curve=equity_curve, exposure_pct=exposure_pct, strategy_name=strategy_name)]}
     path.write_text(json.dumps(payload), encoding="utf-8")
+    return path
+
+
+def _write_data_file(path: Path, *, timestamps: list[str]) -> Path:
+    rows = ["timestamp,open,high,low,close,volume"]
+    for index, timestamp in enumerate(timestamps, start=1):
+        rows.append(f"{timestamp},{index},{index},{index},{index},1000")
+    path.write_text("\n".join(rows) + "\n", encoding="utf-8")
     return path
 
 

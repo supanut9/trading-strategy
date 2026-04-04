@@ -1,0 +1,24 @@
+{
+  "experiment": {
+    "label": "Cross-Timeframe Sleeve Comparison",
+    "notes": "Research-only weighted comparison across mixed timeframes using source data files for timestamp alignment."
+  },
+  "initial_cash": 1000,
+  "bars_per_year": 8760,
+  "components": [
+    {
+      "label": "rsi_1h_core",
+      "result_file": "../results/btcusdt_spot_1h_rsi_refine_next_5000.json",
+      "data_file": "../data/btcusdt_spot_1h_5000.csv",
+      "result_rank": 1,
+      "weight": 0.6
+    },
+    {
+      "label": "breakout_4h_satellite",
+      "result_file": "../results/btcusdt_spot_4h_breakout_atr_execution_5000.json",
+      "data_file": "../data/btcusdt_spot_4h_5000_direct.csv",
+      "result_rank": 1,
+      "weight": 0.4
+    }
+  ]
+}

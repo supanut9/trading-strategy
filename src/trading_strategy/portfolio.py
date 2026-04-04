@@ -4,6 +4,7 @@ import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+from trading_strategy.data import load_ohlcv_csv
 from trading_strategy.metrics import compute_equity_curve_metrics
 from trading_strategy.models import Metrics
 
@@ -13,12 +14,14 @@ class PortfolioComponent:
     label: str
     weight: float
     result_file: str
+    data_file: str | None
     result_rank: int
     strategy_name: str
     parameters: dict
     execution_parameters: dict
     metrics: dict
     equity_curve: list[float]
+    timestamps: list[str] | None
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -74,6 +77,7 @@ def _load_component(spec: dict, *, base_path: Path) -> PortfolioComponent:
 
     weight = float(spec.get("weight", 0.0))
     result_path = base_path / result_file
+    data_file = spec.get("data_file")
     payload = json.loads(result_path.read_text(encoding="utf-8"))
     results = payload.get("results", [])
     if not results:
@@ -83,16 +87,24 @@ def _load_component(spec: dict, *, base_path: Path) -> PortfolioComponent:
 
     selected_result = results[result_rank - 1]
     label = spec.get("label") or selected_result["strategy_name"]
+    timestamps = None
+    if data_file is not None:
+        candles = load_ohlcv_csv(base_path / data_file)
+        timestamps = [candle.timestamp for candle in candles]
+        if len(timestamps) != len(selected_result["equity_curve"]):
+            raise ValueError("component data_file must have the same number of rows as the result equity curve length")
     return PortfolioComponent(
         label=label,
         weight=weight,
         result_file=result_file,
+        data_file=data_file,
         result_rank=result_rank,
         strategy_name=selected_result["strategy_name"],
         parameters=selected_result.get("parameters", {}),
         execution_parameters=selected_result.get("execution_parameters", {}),
         metrics=selected_result["metrics"],
         equity_curve=selected_result["equity_curve"],
+        timestamps=timestamps,
     )
 
 
@@ -105,6 +117,11 @@ def _validate_weights(components: list[PortfolioComponent]) -> None:
 
 
 def _combine_equity_curves(components: list[PortfolioComponent], *, initial_cash: float) -> list[float]:
+    if any(component.timestamps is not None for component in components):
+        if any(component.timestamps is None for component in components):
+            raise ValueError("all portfolio components must provide data_file when timestamp alignment is used")
+        return _combine_equity_curves_by_timestamp(components, initial_cash=initial_cash)
+
     expected_length = len(components[0].equity_curve)
     if expected_length == 0:
         raise ValueError("portfolio component equity curves must not be empty")
@@ -126,3 +143,59 @@ def _combine_equity_curves(components: list[PortfolioComponent], *, initial_cash
         )
         combined_curve.append(initial_cash * combined_normalized_equity)
     return combined_curve
+
+
+def _combine_equity_curves_by_timestamp(components: list[PortfolioComponent], *, initial_cash: float) -> list[float]:
+    parsed_components = [_normalized_component_series(component) for component in components]
+    overlap_start = max(series["timestamps"][0] for series in parsed_components)
+    overlap_end = min(series["timestamps"][-1] for series in parsed_components)
+    if overlap_start >= overlap_end:
+        raise ValueError("portfolio components do not share an overlapping timestamp range")
+
+    aligned_timestamps = sorted(
+        {
+            timestamp
+            for series in parsed_components
+            for timestamp in series["timestamps"]
+            if overlap_start <= timestamp <= overlap_end
+        }
+    )
+    if not aligned_timestamps:
+        raise ValueError("portfolio components do not share any aligned timestamps")
+
+    combined_curve: list[float] = []
+    for timestamp in aligned_timestamps:
+        combined_normalized_equity = 0.0
+        for series in parsed_components:
+            combined_normalized_equity += series["weight"] * _value_at_timestamp(series, timestamp)
+        combined_curve.append(initial_cash * combined_normalized_equity)
+    return combined_curve
+
+
+def _normalized_component_series(component: PortfolioComponent) -> dict:
+    timestamps = component.timestamps or []
+    if not timestamps:
+        raise ValueError("timestamp alignment requires component timestamps")
+    if len(timestamps) != len(component.equity_curve):
+        raise ValueError("component timestamps must match equity curve length")
+
+    starting_equity = component.equity_curve[0]
+    if starting_equity <= 0:
+        raise ValueError("portfolio component equity curves must start above zero")
+    normalized_curve = [value / starting_equity for value in component.equity_curve]
+    return {
+        "weight": component.weight,
+        "timestamps": timestamps,
+        "normalized_curve": normalized_curve,
+    }
+
+
+def _value_at_timestamp(series: dict, timestamp: str) -> float:
+    timestamps = series["timestamps"]
+    values = series["normalized_curve"]
+    latest_value = values[0]
+    for point_timestamp, value in zip(timestamps, values):
+        if point_timestamp > timestamp:
+            break
+        latest_value = value
+    return latest_value

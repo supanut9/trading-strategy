@@ -146,6 +146,10 @@ def _build_backtest_tasks(
             "atr_period": _optional_int(risk_profile.get("atr_period")),
             "stop_loss_atr_multiple": _optional_float(risk_profile.get("stop_loss_atr_multiple")),
             "take_profit_atr_multiple": _optional_float(risk_profile.get("take_profit_atr_multiple")),
+            "leverage": _optional_float(risk_profile.get("leverage")),
+            "maintenance_margin_rate": _optional_float(risk_profile.get("maintenance_margin_rate")),
+            "liquidation_fee_bps": _optional_float(risk_profile.get("liquidation_fee_bps")),
+            "funding_rate_bps_per_bar": _optional_float(risk_profile.get("funding_rate_bps_per_bar")),
         }
         for strategy in strategies
         for risk_profile in risk_profiles

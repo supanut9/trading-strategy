@@ -1,6 +1,7 @@
 import unittest
 
 from trading_strategy.strategies import available_strategies, expand_strategy_grid
+from trading_strategy.strategies.mirror_short import MirrorShortStrategy
 
 
 class StrategyRegistryTests(unittest.TestCase):
@@ -660,6 +661,21 @@ class StrategyRegistryTests(unittest.TestCase):
                 "max_atr_pct": 4.0,
             },
         )
+
+    def test_expand_strategy_grid_supports_mirror_short_direction(self) -> None:
+        strategies = expand_strategy_grid(
+            [
+                {
+                    "name": "buy_and_hold",
+                    "direction": ["long", "mirror_short"],
+                }
+            ]
+        )
+
+        self.assertEqual(len(strategies), 2)
+        self.assertEqual(strategies[0].name, "buy_and_hold")
+        self.assertIsInstance(strategies[1], MirrorShortStrategy)
+        self.assertEqual(strategies[1].name, "buy_and_hold_mirror_short")
 
 
 if __name__ == "__main__":

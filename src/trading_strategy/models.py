@@ -17,6 +17,7 @@ class Candle:
 class Trade:
     entry_time: str
     exit_time: str
+    side: str
     entry_price: float
     exit_price: float
     units: float

@@ -27,6 +27,10 @@ class CliTests(unittest.TestCase):
             {
                 "atr_period": 14,
                 "stop_loss_atr_multiple": 1.5,
+                "leverage": 3,
+                "maintenance_margin_rate": 0.005,
+                "liquidation_fee_bps": 30,
+                "funding_rate_bps_per_bar": 0.0,
             },
         ]
 
@@ -46,6 +50,9 @@ class CliTests(unittest.TestCase):
         self.assertEqual(tasks[-1]["strategy"].name, "sma_cross")
         self.assertEqual(tasks[-1]["atr_period"], 14)
         self.assertEqual(tasks[-1]["stop_loss_atr_multiple"], 1.5)
+        self.assertEqual(tasks[-1]["leverage"], 3.0)
+        self.assertEqual(tasks[-1]["maintenance_margin_rate"], 0.005)
+        self.assertEqual(tasks[-1]["liquidation_fee_bps"], 30.0)
 
     def test_resolve_max_workers_prefers_cli_value(self) -> None:
         self.assertEqual(_resolve_max_workers(5, 2), 5)

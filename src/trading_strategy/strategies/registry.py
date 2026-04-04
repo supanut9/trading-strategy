@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from itertools import product
 
 from trading_strategy.strategies.base import Strategy
+from trading_strategy.strategies.mirror_short import MirrorShortStrategy
 from trading_strategy.strategies.benchmark.buy_and_hold import BuyAndHoldStrategy
 from trading_strategy.strategies.breakout.bollinger_squeeze_breakout import BollingerSqueezeBreakoutStrategy
 from trading_strategy.strategies.breakout.bollinger_squeeze_breakout_trend_filter import (
@@ -252,19 +253,36 @@ def expand_strategy_grid(strategy_specs: list[dict]) -> list[Strategy]:
     for strategy_spec in strategy_specs:
         name = strategy_spec["name"]
         parameter_grid = strategy_spec.get("params", {})
+        directions = strategy_spec.get("direction", ["long"])
+        if not isinstance(directions, list):
+            directions = [directions]
         normalized_items = {
             key: value if isinstance(value, list) else [value]
             for key, value in parameter_grid.items()
         }
 
         if not normalized_items:
-            strategies.append(build_strategy(name))
+            base_strategy = build_strategy(name)
+            strategies.extend(_expand_strategy_directions(base_strategy, directions))
             continue
 
         keys = list(normalized_items.keys())
         value_sets = [normalized_items[key] for key in keys]
         for combination in product(*value_sets):
             params = dict(zip(keys, combination, strict=True))
-            strategies.append(build_strategy(name, params))
+            base_strategy = build_strategy(name, params)
+            strategies.extend(_expand_strategy_directions(base_strategy, directions))
 
     return strategies
+
+
+def _expand_strategy_directions(strategy: Strategy, directions: list[str]) -> list[Strategy]:
+    expanded: list[Strategy] = []
+    for direction in directions:
+        if direction == "long":
+            expanded.append(strategy)
+        elif direction == "mirror_short":
+            expanded.append(MirrorShortStrategy(build_strategy(strategy.name, dict(strategy.parameters))))
+        else:
+            raise ValueError(f"Unknown strategy direction: {direction}")
+    return expanded

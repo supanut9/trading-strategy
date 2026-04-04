@@ -23,6 +23,31 @@ class OneShotLongStrategy(Strategy):
         return 0
 
 
+class SingleEntryStrategy(Strategy):
+    name = "single_entry"
+    parameters = {}
+
+    def desired_position(self, index: int, candles: list[Candle]) -> int:
+        if index == 0:
+            return 1
+        if index == 1:
+            return -1
+        return 0
+
+
+class SingleEntryShortStrategy(Strategy):
+    name = "single_entry_short"
+    parameters = {}
+    supports_short_positions = True
+
+    def desired_position(self, index: int, candles: list[Candle]) -> int:
+        if index == 0:
+            return -1
+        if index == 1:
+            return 2
+        return 0
+
+
 class BacktestTests(unittest.TestCase):
     def test_buy_and_hold_generates_positive_return_in_uptrend(self) -> None:
         candles = [
@@ -181,6 +206,99 @@ class BacktestTests(unittest.TestCase):
         self.assertEqual(result.trades[0].exit_time, "2024-01-03")
         self.assertAlmostEqual(result.trades[0].exit_price, 100.0)
         self.assertLess(result.trades[0].pnl, 0)
+
+    def test_futures_leverage_amplifies_long_pnl(self) -> None:
+        candles = [
+            Candle("2024-01-01", 100, 101, 99, 100, 1_000),
+            Candle("2024-01-02", 100, 101, 99, 100, 1_000),
+            Candle("2024-01-03", 110, 111, 109, 110, 1_000),
+        ]
+
+        result = run_backtest(
+            candles,
+            BuyAndHoldStrategy(),
+            initial_cash=1_000,
+            commission_bps=0,
+            slippage_bps=0,
+            bars_per_year=252,
+            leverage=2.0,
+            maintenance_margin_rate=0.005,
+        )
+
+        self.assertEqual(result.metrics.trade_count, 1)
+        self.assertAlmostEqual(result.metrics.ending_equity, 1_200.0)
+        self.assertAlmostEqual(result.trades[0].pnl, 200.0)
+
+    def test_futures_long_liquidation_closes_position(self) -> None:
+        candles = [
+            Candle("2024-01-01", 100, 101, 99, 100, 1_000),
+            Candle("2024-01-02", 100, 101, 40, 40, 1_000),
+            Candle("2024-01-03", 45, 46, 44, 45, 1_000),
+        ]
+
+        result = run_backtest(
+            candles,
+            SingleEntryStrategy(),
+            initial_cash=1_000,
+            commission_bps=0,
+            slippage_bps=0,
+            bars_per_year=252,
+            leverage=2.0,
+            maintenance_margin_rate=0.005,
+        )
+
+        self.assertEqual(result.metrics.trade_count, 1)
+        self.assertEqual(result.trades[0].exit_time, "2024-01-02")
+        self.assertEqual(result.trades[0].side, "long")
+        self.assertLess(result.trades[0].pnl, 0)
+        self.assertLess(result.metrics.ending_equity, 100.0)
+
+    def test_futures_short_position_profits_when_price_falls(self) -> None:
+        candles = [
+            Candle("2024-01-01", 100, 101, 99, 100, 1_000),
+            Candle("2024-01-02", 90, 91, 89, 90, 1_000),
+            Candle("2024-01-03", 80, 81, 79, 80, 1_000),
+        ]
+
+        result = run_backtest(
+            candles,
+            SingleEntryShortStrategy(),
+            initial_cash=1_000,
+            commission_bps=0,
+            slippage_bps=0,
+            bars_per_year=252,
+            leverage=2.0,
+            maintenance_margin_rate=0.005,
+        )
+
+        self.assertEqual(result.metrics.trade_count, 1)
+        self.assertEqual(result.trades[0].side, "short")
+        self.assertAlmostEqual(result.metrics.ending_equity, 1_222.2222222222222)
+        self.assertAlmostEqual(result.trades[0].pnl, 222.22222222222217)
+
+    def test_futures_short_liquidation_closes_position(self) -> None:
+        candles = [
+            Candle("2024-01-01", 100, 101, 99, 100, 1_000),
+            Candle("2024-01-02", 100, 160, 99, 150, 1_000),
+            Candle("2024-01-03", 145, 146, 144, 145, 1_000),
+        ]
+
+        result = run_backtest(
+            candles,
+            SingleEntryShortStrategy(),
+            initial_cash=1_000,
+            commission_bps=0,
+            slippage_bps=0,
+            bars_per_year=252,
+            leverage=2.0,
+            maintenance_margin_rate=0.005,
+        )
+
+        self.assertEqual(result.metrics.trade_count, 1)
+        self.assertEqual(result.trades[0].side, "short")
+        self.assertEqual(result.trades[0].exit_time, "2024-01-02")
+        self.assertLess(result.trades[0].pnl, 0)
+        self.assertLess(result.metrics.ending_equity, 100.0)
 
 
 if __name__ == "__main__":

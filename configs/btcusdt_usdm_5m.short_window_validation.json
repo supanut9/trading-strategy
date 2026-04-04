@@ -1,0 +1,32 @@
+{
+  "experiment": {
+    "label": "BTCUSDT USD-M 5m short rolling validation",
+    "symbol": "BTCUSDT",
+    "market_type": "usdm_futures",
+    "timeframe": "5m",
+    "notes": "Rolling-window validation of the strongest and safer nearby 5m short candidates."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 5,
+  "slippage_bps": 2,
+  "bars_per_year": 105120,
+  "max_workers": 5,
+  "ranking_metric": "sharpe",
+  "risk_management": {
+    "leverage": [3.0, 5.0],
+    "maintenance_margin_rate": 0.005,
+    "liquidation_fee_bps": 50,
+    "funding_rate_bps_per_bar": 0.0104166667
+  },
+  "strategies": [
+    {
+      "name": "rsi_mean_reversion",
+      "direction": ["mirror_short"],
+      "params": {
+        "period": 21,
+        "oversold": 22,
+        "overbought": 66
+      }
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "experiment": {
+    "label": "BTCUSDT USD-M 1h top-return futures long sweep",
+    "symbol": "BTCUSDT",
+    "market_type": "usdm_futures",
+    "timeframe": "1h",
+    "notes": "Top-return 1h strategy shortlist from prior spot research, rerun as long-only isolated futures with Binance-style VIP0 taker fees, tier-1 liquidation fee, and fixed-interest funding baseline."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 5,
+  "slippage_bps": 2,
+  "bars_per_year": 8760,
+  "max_workers": 5,
+  "ranking_metric": "total_return_pct",
+  "risk_management": {
+    "leverage": [2, 3, 5],
+    "maintenance_margin_rate": 0.005,
+    "liquidation_fee_bps": 50,
+    "funding_rate_bps_per_bar": 0.125
+  },
+  "strategies": [
+    {
+      "name": "rsi_mean_reversion_crossdown_exit",
+      "params": {
+        "period": 24,
+        "oversold": 22,
+        "overbought": 64
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_crossdown_cooldown",
+      "params": {
+        "period": 24,
+        "oversold": 19,
+        "overbought": 64,
+        "cooldown_bars": 1
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "params": {
+        "period": 24,
+        "oversold": 22,
+        "overbought": 63
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_confirmation",
+      "params": {
+        "period": 24,
+        "oversold": 22,
+        "overbought": 63
+      }
+    }
+  ]
+}

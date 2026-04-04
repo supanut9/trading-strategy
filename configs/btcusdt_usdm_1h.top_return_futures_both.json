@@ -1,0 +1,60 @@
+{
+  "experiment": {
+    "label": "BTCUSDT USD-M 1h top-return futures long and mirror-short sweep",
+    "symbol": "BTCUSDT",
+    "market_type": "usdm_futures",
+    "timeframe": "1h",
+    "notes": "Top-return 1h strategy shortlist from prior spot research, rerun as isolated futures with both long and mirrored-short variants under Binance-style baseline fees, liquidation, and funding assumptions."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 5,
+  "slippage_bps": 2,
+  "bars_per_year": 8760,
+  "max_workers": 5,
+  "ranking_metric": "total_return_pct",
+  "risk_management": {
+    "leverage": [2, 3, 5],
+    "maintenance_margin_rate": 0.005,
+    "liquidation_fee_bps": 50,
+    "funding_rate_bps_per_bar": 0.125
+  },
+  "strategies": [
+    {
+      "name": "rsi_mean_reversion_crossdown_exit",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "period": 24,
+        "oversold": 22,
+        "overbought": 64
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_crossdown_cooldown",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "period": 24,
+        "oversold": 19,
+        "overbought": 64,
+        "cooldown_bars": 1
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "period": 24,
+        "oversold": 22,
+        "overbought": 63
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_confirmation",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "period": 24,
+        "oversold": 22,
+        "overbought": 63
+      }
+    }
+  ]
+}

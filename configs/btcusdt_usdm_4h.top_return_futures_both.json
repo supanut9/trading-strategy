@@ -1,0 +1,169 @@
+{
+  "experiment": {
+    "label": "BTCUSDT USD-M 4h top-return futures long and mirror-short sweep",
+    "symbol": "BTCUSDT",
+    "market_type": "usdm_futures",
+    "timeframe": "4h",
+    "notes": "Top-return 4h strategy shortlist from prior spot research, rerun as isolated futures with both long and mirrored-short variants under Binance-style baseline fees, liquidation, and funding assumptions."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 5,
+  "slippage_bps": 2,
+  "bars_per_year": 2190,
+  "max_workers": 5,
+  "ranking_metric": "total_return_pct",
+  "risk_management": {
+    "leverage": [2, 3, 5],
+    "maintenance_margin_rate": 0.005,
+    "liquidation_fee_bps": 50,
+    "funding_rate_bps_per_bar": 0.5
+  },
+  "strategies": [
+    {
+      "name": "ema_triple_pullback",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "fast_window": 10,
+        "middle_window": 21,
+        "slow_window": 55,
+        "pullback_pct": 0.0025
+      }
+    },
+    {
+      "name": "bollinger_squeeze_breakout_trend_filter",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "period": 30,
+        "band_width": 2.0,
+        "squeeze_threshold_pct": 6.0,
+        "breakout_lookback": 30,
+        "exit_lookback": 20,
+        "trend_ema_window": 150,
+        "trend_slope_window": 3
+      }
+    },
+    {
+      "name": "ema_cross",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "short_window": 12,
+        "long_window": 89
+      }
+    },
+    {
+      "name": "bollinger_squeeze_breakout",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "period": 30,
+        "band_width": 2.0,
+        "squeeze_threshold_pct": 6.0,
+        "breakout_lookback": 55,
+        "exit_lookback": 20
+      }
+    },
+    {
+      "name": "ema_triple_stack",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "fast_window": 12,
+        "middle_window": 34,
+        "slow_window": 144
+      }
+    },
+    {
+      "name": "ema_price_trend",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "ema_window": 100,
+        "slope_window": 6
+      }
+    },
+    {
+      "name": "ema_cross_trend_filter",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "short_window": 9,
+        "long_window": 55,
+        "trend_fast_window": 50,
+        "trend_slow_window": 200
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_crossdown_exit",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "period": 25,
+        "oversold": 19,
+        "overbought": 65
+      }
+    },
+    {
+      "name": "ema_cross_price_filter",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "short_window": 21,
+        "long_window": 55,
+        "filter_window": 200
+      }
+    },
+    {
+      "name": "donchian_breakout",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "lookback": 55,
+        "exit_lookback": 20
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "period": 22,
+        "oversold": 22,
+        "overbought": 64
+      }
+    },
+    {
+      "name": "ema_cross_price_slope_filter",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "short_window": 34,
+        "long_window": 55,
+        "filter_window": 200,
+        "slope_window": 3
+      }
+    },
+    {
+      "name": "rsi_mean_reversion_confirmation",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "period": 22,
+        "oversold": 21,
+        "overbought": 64
+      }
+    },
+    {
+      "name": "ema_triple_pullback_fast_exit",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "fast_window": 9,
+        "middle_window": 22,
+        "slow_window": 55,
+        "pullback_pct": 0.003
+      }
+    },
+    {
+      "name": "double_top_bottom_reversal",
+      "direction": ["long", "mirror_short"],
+      "params": {
+        "swing_window": 2,
+        "min_separation_bars": 4,
+        "max_separation_bars": 18,
+        "peak_tolerance_pct": 0.01,
+        "neckline_buffer_pct": 0.015,
+        "breakout_pct": 0.0,
+        "lookback_bars": 90
+      }
+    }
+  ]
+}

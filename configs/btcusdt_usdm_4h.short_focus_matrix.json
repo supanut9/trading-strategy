@@ -1,0 +1,51 @@
+{
+  "experiment": {
+    "label": "BTCUSDT USD-M 4h short focus matrix",
+    "symbol": "BTCUSDT",
+    "market_type": "usdm_futures",
+    "timeframe": "4h",
+    "notes": "Focused 4h short-side research around the only partially credible mirrored-short families: EMA cross and EMA pullback variants."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 5,
+  "slippage_bps": 2,
+  "bars_per_year": 2190,
+  "max_workers": 5,
+  "ranking_metric": "sharpe",
+  "risk_management": {
+    "leverage": [1.5, 2.0, 2.5, 3.0],
+    "maintenance_margin_rate": 0.005,
+    "liquidation_fee_bps": 50,
+    "funding_rate_bps_per_bar": 0.5
+  },
+  "strategies": [
+    {
+      "name": "ema_cross",
+      "direction": ["mirror_short"],
+      "params": {
+        "short_window": [9, 12, 15],
+        "long_window": [89, 100, 144]
+      }
+    },
+    {
+      "name": "ema_triple_pullback",
+      "direction": ["mirror_short"],
+      "params": {
+        "fast_window": [9, 10, 12],
+        "middle_window": [21, 22, 24],
+        "slow_window": [55, 72],
+        "pullback_pct": [0.002, 0.0025, 0.003]
+      }
+    },
+    {
+      "name": "ema_triple_pullback_fast_exit",
+      "direction": ["mirror_short"],
+      "params": {
+        "fast_window": [9, 10, 12],
+        "middle_window": [21, 22],
+        "slow_window": [55],
+        "pullback_pct": [0.0025, 0.003]
+      }
+    }
+  ]
+}

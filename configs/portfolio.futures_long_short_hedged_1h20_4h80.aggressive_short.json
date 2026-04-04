@@ -1,0 +1,38 @@
+{
+  "experiment": {
+    "label": "BTCUSDT futures hedged sleeves using aggressive 4h short leader",
+    "notes": "Research-only mixed-direction sleeve test using the higher-return 4h short leader from the focused short matrix."
+  },
+  "initial_cash": 1000,
+  "bars_per_year": 2190,
+  "components": [
+    {
+      "label": "1h_long",
+      "result_file": "../results/btcusdt_usdm_1h_top_return_futures_both_5000.json",
+      "data_file": "../data/btcusdt_usdm_1h_5000.csv",
+      "result_rank": 1,
+      "weight": 0.15
+    },
+    {
+      "label": "1h_short",
+      "result_file": "../results/btcusdt_usdm_1h_top_return_futures_both_5000.json",
+      "data_file": "../data/btcusdt_usdm_1h_5000.csv",
+      "result_rank": 13,
+      "weight": 0.05
+    },
+    {
+      "label": "4h_long",
+      "result_file": "../results/btcusdt_usdm_4h_top_return_futures_both_5000.json",
+      "data_file": "../data/btcusdt_usdm_4h_5000.csv",
+      "result_rank": 1,
+      "weight": 0.60
+    },
+    {
+      "label": "4h_short",
+      "result_file": "../results/btcusdt_usdm_4h_short_focus_matrix_5000.json",
+      "data_file": "../data/btcusdt_usdm_4h_5000.csv",
+      "result_rank": 5,
+      "weight": 0.20
+    }
+  ]
+}

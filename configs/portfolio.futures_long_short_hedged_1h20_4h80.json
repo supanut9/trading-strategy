@@ -1,0 +1,38 @@
+{
+  "experiment": {
+    "label": "BTCUSDT futures hedged long-short sleeves with 1h capped at 20%",
+    "notes": "Research-only mixed-direction sleeve test with short sleeves reduced to hedge weights. 1h long 15%, 1h short 5%, 4h long 60%, 4h short 20%."
+  },
+  "initial_cash": 1000,
+  "bars_per_year": 2190,
+  "components": [
+    {
+      "label": "1h_long",
+      "result_file": "../results/btcusdt_usdm_1h_top_return_futures_both_5000.json",
+      "data_file": "../data/btcusdt_usdm_1h_5000.csv",
+      "result_rank": 1,
+      "weight": 0.15
+    },
+    {
+      "label": "1h_short",
+      "result_file": "../results/btcusdt_usdm_1h_top_return_futures_both_5000.json",
+      "data_file": "../data/btcusdt_usdm_1h_5000.csv",
+      "result_rank": 13,
+      "weight": 0.05
+    },
+    {
+      "label": "4h_long",
+      "result_file": "../results/btcusdt_usdm_4h_top_return_futures_both_5000.json",
+      "data_file": "../data/btcusdt_usdm_4h_5000.csv",
+      "result_rank": 1,
+      "weight": 0.60
+    },
+    {
+      "label": "4h_short",
+      "result_file": "../results/btcusdt_usdm_4h_ema_cross_mirror_short_refine_5000.json",
+      "data_file": "../data/btcusdt_usdm_4h_5000.csv",
+      "result_rank": 1,
+      "weight": 0.20
+    }
+  ]
+}

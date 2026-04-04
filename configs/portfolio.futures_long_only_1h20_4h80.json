@@ -1,0 +1,24 @@
+{
+  "experiment": {
+    "label": "BTCUSDT futures long-only sleeves with 1h capped at 20%",
+    "notes": "Research-only long-only benchmark using the same timeframe emphasis as the mixed-direction test."
+  },
+  "initial_cash": 1000,
+  "bars_per_year": 2190,
+  "components": [
+    {
+      "label": "1h_long",
+      "result_file": "../results/btcusdt_usdm_1h_top_return_futures_both_5000.json",
+      "data_file": "../data/btcusdt_usdm_1h_5000.csv",
+      "result_rank": 1,
+      "weight": 0.20
+    },
+    {
+      "label": "4h_long",
+      "result_file": "../results/btcusdt_usdm_4h_top_return_futures_both_5000.json",
+      "data_file": "../data/btcusdt_usdm_4h_5000.csv",
+      "result_rank": 1,
+      "weight": 0.80
+    }
+  ]
+}

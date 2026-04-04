@@ -1,0 +1,41 @@
+{
+  "experiment": {
+    "label": "BTCUSDT USD-M 5m short focus matrix",
+    "symbol": "BTCUSDT",
+    "market_type": "usdm_futures",
+    "timeframe": "5m",
+    "notes": "Initial 5m short-side discovery pass using mirrored RSI mean-reversion families under Binance-style futures assumptions."
+  },
+  "initial_cash": 1000,
+  "commission_bps": 5,
+  "slippage_bps": 2,
+  "bars_per_year": 105120,
+  "max_workers": 5,
+  "ranking_metric": "sharpe",
+  "risk_management": {
+    "leverage": [2.0, 3.0, 5.0],
+    "maintenance_margin_rate": 0.005,
+    "liquidation_fee_bps": 50,
+    "funding_rate_bps_per_bar": 0.0104166667
+  },
+  "strategies": [
+    {
+      "name": "rsi_mean_reversion_confirmation",
+      "direction": ["mirror_short"],
+      "params": {
+        "period": [14, 18, 21, 24],
+        "oversold": [18, 20, 22],
+        "overbought": [62, 64, 66]
+      }
+    },
+    {
+      "name": "rsi_mean_reversion",
+      "direction": ["mirror_short"],
+      "params": {
+        "period": [14, 18, 21, 24],
+        "oversold": [18, 20, 22],
+        "overbought": [62, 64, 66]
+      }
+    }
+  ]
+}

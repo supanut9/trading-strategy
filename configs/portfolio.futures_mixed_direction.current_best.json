@@ -1,0 +1,38 @@
+{
+  "experiment": {
+    "label": "BTCUSDT futures mixed-direction current best portfolio",
+    "notes": "Current best mixed-direction research portfolio. 1h long 15%, 1h short 5%, 4h long 65%, 4h short 15%."
+  },
+  "initial_cash": 1000,
+  "bars_per_year": 2190,
+  "components": [
+    {
+      "label": "1h_long",
+      "result_file": "../results/btcusdt_usdm_1h_top_return_futures_both_5000.json",
+      "data_file": "../data/btcusdt_usdm_1h_5000.csv",
+      "result_rank": 1,
+      "weight": 0.15
+    },
+    {
+      "label": "1h_short",
+      "result_file": "../results/btcusdt_usdm_1h_top_return_futures_both_5000.json",
+      "data_file": "../data/btcusdt_usdm_1h_5000.csv",
+      "result_rank": 13,
+      "weight": 0.05
+    },
+    {
+      "label": "4h_long",
+      "result_file": "../results/btcusdt_usdm_4h_top_return_futures_both_5000.json",
+      "data_file": "../data/btcusdt_usdm_4h_5000.csv",
+      "result_rank": 1,
+      "weight": 0.65
+    },
+    {
+      "label": "4h_short",
+      "result_file": "../results/btcusdt_usdm_4h_short_focus_matrix_5000.json",
+      "data_file": "../data/btcusdt_usdm_4h_5000.csv",
+      "result_rank": 5,
+      "weight": 0.15
+    }
+  ]
+}
